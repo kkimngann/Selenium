@@ -32,7 +32,5 @@ public class Dropdown implements Urls {
             e.printStackTrace();
             driver.quit();
         }
-
-
     }
 }
