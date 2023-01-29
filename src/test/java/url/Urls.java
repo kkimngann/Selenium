@@ -8,4 +8,5 @@ public interface Urls {
     String jsalert = "javascript_alerts";
     String login = "login";
     String dynamicControls = "dynamic_controls";
+    String floatingMenu = "floating_menu";
 }
