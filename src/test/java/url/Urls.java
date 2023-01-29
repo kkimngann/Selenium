@@ -6,4 +6,5 @@ public interface Urls {
     String iframe = "iframe";
     String hover = "hovers";
     String jsalert = "javascript_alerts";
+    String login = "login";
 }
