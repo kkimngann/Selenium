@@ -26,9 +26,9 @@ public class DriverFactory {
         System.setProperty("webdriver.chrome.driver", chromeDriverLocation);
 
         ChromeOptions chromeOptions = new ChromeOptions();
-        chromeOptions.addArguments("--incognito");
+        //chromeOptions.addArguments("--incognito");
         WebDriver driver = new ChromeDriver(chromeOptions);
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(15));
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
         return driver;
 
     }

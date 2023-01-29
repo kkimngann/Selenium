@@ -7,4 +7,5 @@ public interface Urls {
     String hover = "hovers";
     String jsalert = "javascript_alerts";
     String login = "login";
+    String dynamicControls = "dynamic_controls";
 }
