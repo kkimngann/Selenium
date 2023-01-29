@@ -1,12 +1,14 @@
-package api;
+package Driver;
 
 import org.apache.commons.exec.OS;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
-public class LaunchBrowser {
-    public static void main(String[] args) throws InterruptedException {
+import java.time.Duration;
+
+public class DriverFactory {
+    public static WebDriver getChromeDriver(){
         String currentProjectLocation = System.getProperty("user.dir");
 
         String chromeDriverLocation = "";
@@ -25,16 +27,9 @@ public class LaunchBrowser {
 
         ChromeOptions chromeOptions = new ChromeOptions();
         chromeOptions.addArguments("--incognito");
-        //chromeOptions.addArguments("--start-maximized");
-        //chromeOptions.addArguments("--headless");
-        //chromeOptions.addArguments("--no-sandbox");
-        //chromeOptions.addArguments("--disable-dev-shm-usage");
-        //chromeOptions.addArguments("user-data-dir=" + chromeDefaultProfileLocation);
         WebDriver driver = new ChromeDriver(chromeOptions);
-        driver.manage().window().maximize();
-        driver.get("https://learn.sdetpro.com");
-        Thread.sleep(3000);
-        driver.quit();
-    }
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(15));
+        return driver;
 
+    }
 }
