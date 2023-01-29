@@ -9,4 +9,6 @@ public interface Urls {
     String login = "login";
     String dynamicControls = "dynamic_controls";
     String floatingMenu = "floating_menu";
+
+    String demoBaseUrl = "https://demowebshop.tricentis.com/";
 }
