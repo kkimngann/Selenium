@@ -5,4 +5,5 @@ public interface Urls {
     String dropdown = "dropdown";
     String iframe = "iframe";
     String hover = "hovers";
+    String jsalert = "javascript_alerts";
 }
