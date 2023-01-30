@@ -6,42 +6,56 @@ import models.components.global.footer.FooterColumnComponent;
 import models.components.global.footer.InformationColumnComponent;
 import models.pages.HomePage;
 import org.openqa.selenium.WebDriver;
+import org.testng.Assert;
+import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
+import support.verfication.Verifier;
 import url.Urls;
 
 public class FooterTest {
-    public static void main(String[] args) {
+
+    @Test
+    public void testFooterCategoryPage() {
+    }
+
+    @Test (priority = 3)
+    public void testFooterRegisterPage() {
+       String actualResult = "Ngan";
+       String expectedResult = "Kim";
+       //Verifier.verifyEqual(actualResult, expectedResult);
+        // hard assertion
+       //Assert.assertEquals(actualResult, expectedResult, "[FAILED] Name is incorrect");
+       Assert.fail("FAILED");
+    }
+
+    @Test
+    public void testFooterLoginPage() {
+        SoftAssert softAssert = new SoftAssert();
+        softAssert.assertEquals(1,2, "FAILED");
+        softAssert.assertEquals(1,1);
+        softAssert.assertEquals(1,2,"FAILED");
+        softAssert.assertAll();
+    }
+
+    // dependsOnMethods: testFooterRegisterPage need to pass the testFooterHomePage can run --> khong nen dung
+    //priority default 0 --> 1--> 2 --> khong nen dung
+    @Test(priority = 1, dependsOnMethods = {"testFooterRegisterPage"})
+    public void testFooterHomePage(){
         WebDriver driver = DriverFactory.getChromeDriver();
-        try{
-            testFooterHomePage(driver);
-            testFooterLoginPage(driver);
-            testFooterRegisterPage(driver);
-            testFooterCategoryPage(driver);
+        driver.get(Urls.demoBaseUrl);
+        try {
+            HomePage homePage = new HomePage(driver);
+            InformationColumnComponent informationColumnComponent = homePage.footerComponent().informationColumnComponent();
+            testFooterColumn(informationColumnComponent);
+
+            CustomerServiceColumnComponent customerServiceColumnComponent = homePage.footerComponent().customerServiceColumnComponent();
+            testFooterColumn(customerServiceColumnComponent);
             driver.quit();
-        }catch (Exception e){
+        }
+        catch (Exception e){
             e.printStackTrace();
             driver.quit();
         }
-
-
-    }
-
-    private static void testFooterCategoryPage(WebDriver driver) {
-    }
-
-    private static void testFooterRegisterPage(WebDriver driver) {
-    }
-
-    private static void testFooterLoginPage(WebDriver driver) {
-    }
-
-    public static void testFooterHomePage(WebDriver driver){
-        driver.get(Urls.demoBaseUrl);
-        HomePage homePage  = new HomePage(driver);
-        InformationColumnComponent informationColumnComponent = homePage.footerComponent().informationColumnComponent();
-        testFooterColumn(informationColumnComponent);
-
-        CustomerServiceColumnComponent customerServiceColumnComponent = homePage.footerComponent().customerServiceColumnComponent();
-        testFooterColumn(customerServiceColumnComponent);
     }
 
     public static void testFooterColumn(FooterColumnComponent footerColumnComponent){
