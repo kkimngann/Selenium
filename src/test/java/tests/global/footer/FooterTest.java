@@ -10,52 +10,40 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 import support.verfication.Verifier;
+import test_flows.global.FooterTestFlow;
 import url.Urls;
 
 public class FooterTest {
 
     @Test
     public void testFooterCategoryPage() {
-    }
-
-    @Test (priority = 3)
-    public void testFooterRegisterPage() {
-       String actualResult = "Ngan";
-       String expectedResult = "Kim";
-       //Verifier.verifyEqual(actualResult, expectedResult);
-        // hard assertion
-       //Assert.assertEquals(actualResult, expectedResult, "[FAILED] Name is incorrect");
-       Assert.fail("FAILED");
-    }
-
-    @Test
-    public void testFooterLoginPage() {
-        SoftAssert softAssert = new SoftAssert();
-        softAssert.assertEquals(1,2, "FAILED");
-        softAssert.assertEquals(1,1);
-        softAssert.assertEquals(1,2,"FAILED");
-        softAssert.assertAll();
-    }
-
-    // dependsOnMethods: testFooterRegisterPage need to pass the testFooterHomePage can run --> khong nen dung
-    //priority default 0 --> 1--> 2 --> khong nen dung
-    @Test(priority = 1, dependsOnMethods = {"testFooterRegisterPage"})
-    public void testFooterHomePage(){
         WebDriver driver = DriverFactory.getChromeDriver();
-        driver.get(Urls.demoBaseUrl);
-        try {
-            HomePage homePage = new HomePage(driver);
-            InformationColumnComponent informationColumnComponent = homePage.footerComponent().informationColumnComponent();
-            testFooterColumn(informationColumnComponent);
-
-            CustomerServiceColumnComponent customerServiceColumnComponent = homePage.footerComponent().customerServiceColumnComponent();
-            testFooterColumn(customerServiceColumnComponent);
-            driver.quit();
+        try{
+            driver.get(Urls.demoBaseUrl);
+            FooterTestFlow footerTestFlow = new FooterTestFlow(driver);
+            footerTestFlow.verifyProductCategoryFooterComponent();
         }
         catch (Exception e){
             e.printStackTrace();
             driver.quit();
         }
+        driver.quit();
+    }
+
+    @Test
+    public void testFooterRegisterPage() {
+
+    }
+
+    @Test
+    public void testFooterLoginPage() {
+
+    }
+
+    // dependsOnMethods: testFooterRegisterPage need to pass the testFooterHomePage can run --> khong nen dung
+    //priority default 0 --> 1--> 2 --> khong nen dung
+    @Test
+    public void testFooterHomePage(){
     }
 
     public static void testFooterColumn(FooterColumnComponent footerColumnComponent){
@@ -64,6 +52,7 @@ public class FooterTest {
             System.out.println(link.getText());
             System.out.println(link.getAttribute("href"));
         });
-
     }
+
+
 }

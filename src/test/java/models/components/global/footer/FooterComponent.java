@@ -24,7 +24,7 @@ public class FooterComponent extends Component {
         return findComponent(MyAccountColumnComponent.class, driver);
     }
 
-    public FooterColumnComponent footerColumnComponent(){
-        return findComponent(FooterColumnComponent.class, driver);
+    public FollowUsColumnComponent followUsColumnComponent(){
+        return findComponent(FollowUsColumnComponent.class, driver);
     }
 }

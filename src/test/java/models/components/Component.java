@@ -78,4 +78,8 @@ public class Component {
                     ComponentCSSSelector.class.getSimpleName() + " or " + ComponentXpathSelector.class.getSimpleName());
         }
     }
+
+    public WebElement getComponent() {
+        return component;
+    }
 }
