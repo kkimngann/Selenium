@@ -113,7 +113,7 @@ public class FooterTestFlow {
         }
 
         //Link text verification
-        Assert.assertEquals(actualLinkText, expectedLinkText, "[ERROR] Footer text do not match");
+        Assert.assertEquals(actualLinkText, expectedLinkText, "[ERROR] Footer text do not match. Please check");
 
         //Verify Href
         Assert.assertEquals(actualHref, expectedHref, "[ERROR] Footer link do not match");;
