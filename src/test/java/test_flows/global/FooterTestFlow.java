@@ -95,8 +95,6 @@ public class FooterTestFlow {
 
         //Verify footer component
         verifyFooterComponent();
-
-
     }
 
     public void testFooterColumn(FooterColumnComponent footerColumnComponent, List<String> expectedLinkText, List<String> expectedHref){
