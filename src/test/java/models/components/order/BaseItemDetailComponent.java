@@ -18,6 +18,4 @@ public class BaseItemDetailComponent extends Component {
         String productPriceText = component.findElement(productPriceSelector).getText().trim();
         return Double.parseDouble(productPriceText);
     }
-
-
 }

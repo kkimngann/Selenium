@@ -19,5 +19,3 @@ public class StandardComputerComponent extends ComputerEssentialComponent{
         return null;
     }
 }
-
-// check git
