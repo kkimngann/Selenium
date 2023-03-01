@@ -23,11 +23,10 @@ public class BuyCheapComputer extends CucumberRunner implements Urls {
     public void selectProcessorAndRAM(String processor, String RAM){
         orderComputerFlow.buildComputerSpecAndAddToCard(processor, RAM);
     }
-    @Then("Number item in cart is {int}")
-    public void verifyNumberItemInCart(int expectedNumberOfItem){
+    @Then("Verify item in cart correct data")
+    public void verifyNumberItemInCart(){
         orderComputerFlow.gotoShoppingCart();
-        Thr
-        //Assert orderComputerFlow.checkTotalItemInCart(expectedNumberOfItem);
+
     }
 
 }

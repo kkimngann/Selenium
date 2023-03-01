@@ -16,7 +16,7 @@ public class HeaderMenuComponent extends Component {
     }
 
     public void clickShoppingCart(){
-        component.findElement(By.cssSelector("#topcartlink"));
+        component.findElement(By.cssSelector("#topcartlink")).click();
     }
 
     public void waitingUntilExistSucessfullMessage() {

@@ -31,4 +31,14 @@ public class OrderComputerFlow <T extends ComputerEssentialComponent>{
         computerItemDetailPage.headerMenuComponent().clickShoppingCart();
     }
 
+    public void verifyShoppingCart(){
+        //verify product info
+
+
+        //verify qty
+
+        //verify value
+
+    }
+
 }
