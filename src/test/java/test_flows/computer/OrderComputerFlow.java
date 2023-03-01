@@ -8,17 +8,27 @@ public class OrderComputerFlow <T extends ComputerEssentialComponent>{
     private final WebDriver driver;
     private final Class<T> computerEssentialComponent;
 
+
+
     public OrderComputerFlow(WebDriver driver, Class<T> computerEssentialComponent) {
         this.driver = driver;
         this.computerEssentialComponent = computerEssentialComponent;
     }
-
-    public void buildComputerSpecAndAddToCard(){
+    public void buildComputerSpecAndAddToCard(String processor, String RAM){
         ComputerItemDetailPage computerItemDetailPage = new ComputerItemDetailPage(driver);
         T computerEssentialCompo = computerItemDetailPage.computerComponent(computerEssentialComponent);
-        computerEssentialCompo.selectProcessorType("Fast");
-        computerEssentialCompo.selectRAMType("4 GB");
+        computerEssentialCompo.selectProcessorType(processor);
+        computerEssentialCompo.selectRAMType(RAM);
+        computerEssentialCompo.selectAddToCart();
+
+        //waiting for added to cart successful
+
     }
 
+    public void gotoShoppingCart(){
+        ComputerItemDetailPage computerItemDetailPage = new ComputerItemDetailPage(driver);
+        computerItemDetailPage.headerMenuComponent().waitingUntilExistSucessfullMessage();
+        computerItemDetailPage.headerMenuComponent().clickShoppingCart();
+    }
 
 }

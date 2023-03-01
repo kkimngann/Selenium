@@ -32,6 +32,10 @@ public abstract class ComputerEssentialComponent extends Component {
         else{
             throw  new RuntimeException("The option " + type + " not found");
         }
+    }
 
+    public void selectAddToCart(){
+        String selectorStr = "//input[contains(@id,\"add-to-cart-button\")]";
+        driver.findElement(By.xpath(selectorStr)).click();
     }
 }

@@ -1,6 +1,8 @@
-package tests;
+package runner;
 
 import Driver.DriverFactory;
+import io.cucumber.testng.AbstractTestNGCucumberTests;
+import io.cucumber.testng.CucumberOptions;
 import io.qameta.allure.Allure;
 import org.openqa.selenium.WebDriver;
 import org.testng.ITestResult;
@@ -8,11 +10,9 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 
-import java.awt.Rectangle;
-import java.awt.Robot;
-import java.awt.Toolkit;
-import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -21,12 +21,12 @@ import java.nio.file.Paths;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-public class BaseTest {
+@CucumberOptions(tags = " @OrderComputer",
+
+        features = "src/test/resources/features", glue = { "stepdefinitions"},
+        plugin = { "pretty", "json:target/cucumber-reports/cucumber.json",	"html:target/cucumber-reports/cucumberreport.html" }, monochrome = true)
+public class CucumberRunner extends AbstractTestNGCucumberTests{
     protected static WebDriver driver;
-
-    public BaseTest(WebDriver driver) {
-    }
-
     @BeforeTest
     public void initBrowserSession(){
         driver = DriverFactory.getChromeDriver();
@@ -38,7 +38,6 @@ public class BaseTest {
             driver.quit();
         }
     }
-
     @AfterMethod
     public void captureScreenshot(ITestResult result){
         if(true){
@@ -57,7 +56,6 @@ public class BaseTest {
             takeScreenshot(fileLocation);
         }
     }
-
 
     private void takeScreenshot(String fileLocation){
         try {
