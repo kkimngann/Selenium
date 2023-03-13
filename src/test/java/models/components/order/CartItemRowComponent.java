@@ -9,5 +9,5 @@ public class CartItemRowComponent extends Component {
         super(driver, component);
     }
 
-    
+
 }

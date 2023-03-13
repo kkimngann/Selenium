@@ -26,6 +26,7 @@ public class BuyCheapComputer extends CucumberRunner implements Urls {
     @Then("Verify item in cart correct data")
     public void verifyNumberItemInCart(){
         orderComputerFlow.gotoShoppingCart();
+        orderComputerFlow.verifyShoppingCart();
 
     }
 

@@ -21,7 +21,7 @@ import java.nio.file.Paths;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-@CucumberOptions(tags = " @OrderComputer",
+@CucumberOptions(tags = "@OrderComputer",
 
         features = "src/test/resources/features", glue = { "stepdefinitions"},
         plugin = { "pretty", "json:target/cucumber-reports/cucumber.json",	"html:target/cucumber-reports/cucumberreport.html" }, monochrome = true)

@@ -1,8 +1,12 @@
 package test_flows.computer;
 
+import models.components.cart.TotalComponent;
 import models.components.order.ComputerEssentialComponent;
 import models.pages.ComputerItemDetailPage;
+import models.pages.ShoppingCartPage;
 import org.openqa.selenium.WebDriver;
+
+import java.util.Map;
 
 public class OrderComputerFlow <T extends ComputerEssentialComponent>{
     private final WebDriver driver;
@@ -32,6 +36,13 @@ public class OrderComputerFlow <T extends ComputerEssentialComponent>{
     }
 
     public void verifyShoppingCart(){
+        ShoppingCartPage shoppingCartPage = new ShoppingCartPage(driver);
+        TotalComponent totalComponent = shoppingCartPage.totalComponent();
+        Map<String, Double> priceCategories = totalComponent.priceCategories();
+        for (String priceType : priceCategories.keySet()){
+            System.out.printf(priceType);
+            System.out.println(priceCategories.get(priceType));
+        }
         //verify product info
 
 
