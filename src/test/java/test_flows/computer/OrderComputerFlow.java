@@ -31,7 +31,7 @@ public class OrderComputerFlow <T extends ComputerEssentialComponent>{
 
     public void gotoShoppingCart(){
         ComputerItemDetailPage computerItemDetailPage = new ComputerItemDetailPage(driver);
-        computerItemDetailPage.headerMenuComponent().waitingUntilExistSucessfullMessage();
+        //computerItemDetailPage.headerMenuComponent().waitingUntilExistSucessfullMessage();
         computerItemDetailPage.headerMenuComponent().clickShoppingCart();
     }
 

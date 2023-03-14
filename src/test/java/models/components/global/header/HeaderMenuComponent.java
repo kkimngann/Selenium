@@ -17,6 +17,8 @@ public class HeaderMenuComponent extends Component {
 
     public void clickShoppingCart(){
         component.findElement(By.cssSelector("#topcartlink")).click();
+        try{Thread.sleep(5000);}
+        catch (Exception ignore){}
     }
 
     public void waitingUntilExistSucessfullMessage() {
@@ -25,5 +27,13 @@ public class HeaderMenuComponent extends Component {
             wait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("#bar-notification"), successMsg));
         } catch (TimeoutException ignore) {
         }
+    }
+
+    public void clickRegister(){
+        component.findElement(By.cssSelector(".ico-register")).click();
+    }
+
+    public void clickLogin(){
+        component.findElement(By.cssSelector(".ico-login")).click();
     }
 }

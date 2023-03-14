@@ -38,7 +38,7 @@ public class Component {
     public<T extends Component> List<T> findComponents(Class<T> componentClass, WebDriver driver){
         By componentSelector;
         try{
-            componentSelector = getComponentSelector(componentClass);
+             componentSelector = getComponentSelector(componentClass);
         }
         catch (Exception e){
             throw  new IllegalArgumentException("[ERROR] Component must have css selector");

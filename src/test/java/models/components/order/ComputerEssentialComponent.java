@@ -37,5 +37,11 @@ public abstract class ComputerEssentialComponent extends Component {
     public void selectAddToCart(){
         String selectorStr = "//input[contains(@id,\"add-to-cart-button\")]";
         driver.findElement(By.xpath(selectorStr)).click();
+        try{
+            Thread.sleep(5000);
+        }
+        catch (Exception ignore){
+        }
+
     }
 }

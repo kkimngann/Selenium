@@ -12,9 +12,9 @@ import java.util.Map;
 
 @ComponentCSSSelector(".cart-footer .totals")
 public class TotalComponent extends Component {
-    private static final By priceTableSel = By.cssSelector("");
-    private static final By priceTypeSel = By.cssSelector("");
-    private static final By priceValueSel = By.cssSelector("");
+    private static final By priceTableSel = By.cssSelector(".cart-total tr");
+    private static final By priceTypeSel = By.cssSelector(".cart-total-left");
+    private static final By priceValueSel = By.cssSelector(".cart-total-right");
     public TotalComponent(WebDriver driver, WebElement component) {
         super(driver, component);
     }
