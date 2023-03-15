@@ -23,9 +23,9 @@ import java.util.GregorianCalendar;
 
 @CucumberOptions(tags = "@Registration",
 
-        features = "src/test/resources/features", glue = { "stepdefinitions"},
+        features = "src/test/resources/features", glue = {"stepdefinitions"},
         plugin = { "pretty", "json:target/cucumber-reports/cucumber.json",	"html:target/cucumber-reports/cucumberreport.html" }, monochrome = true)
-public class CucumberRunner extends AbstractTestNGCucumberTests{
+public class CucumberRunnerTest extends AbstractTestNGCucumberTests{
     protected static WebDriver driver;
     @BeforeTest
     public void initBrowserSession(){

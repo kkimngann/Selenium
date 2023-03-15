@@ -2,7 +2,7 @@ package stepdefinitions;
 
 import io.cucumber.java.en.Then;
 import org.testng.Assert;
-import runner.CucumberRunner;
+import runner.CucumberRunnerTest;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import io.qameta.allure.Feature;
@@ -11,7 +11,7 @@ import test_flows.computer.OrderComputerFlow;
 import url.Urls;
 
 @Feature("src/test/resources/features/BuyCheapComputer.feature")
-public class BuyCheapComputer extends CucumberRunner implements Urls {
+public class BuyCheapComputer extends CucumberRunnerTest implements Urls {
     OrderComputerFlow<CheapComputerComponent> orderComputerFlow = new OrderComputerFlow<>(driver, CheapComputerComponent.class);
     @Given("User access to the computer detail page")
     public void gotoURL(){

@@ -21,22 +21,22 @@ public class RegistrationFlow {
 
     public void registerWithData(String gender, String firstName, String lastName, String email, String password, String confirmPassword){
         RegisterPage registerPage = new RegisterPage(driver);
-        registerPage.registerForm().inputGender(gender);
-        registerPage.registerForm().inputFirstName(firstName);
-        registerPage.registerForm().inputLastName(lastName);
-        registerPage.registerForm().inputEmail(email);
-        registerPage.registerForm().inputPassword(password);
-        registerPage.registerForm().inputConfirmPassword(confirmPassword);
-        registerPage.registerForm().selectRegister();
+        registerPage.registrationComponent().inputGender(gender);
+        registerPage.registrationComponent().inputFirstName(firstName);
+        registerPage.registrationComponent().inputLastName(lastName);
+        registerPage.registrationComponent().inputEmail(email);
+        registerPage.registrationComponent().inputPassword(password);
+        registerPage.registrationComponent().inputConfirmPassword(confirmPassword);
+        registerPage.registrationComponent().selectRegister();
     }
 
     public void selectRegister(){
         RegisterPage registerPage = new RegisterPage(driver);
-        registerPage.registerForm().selectRegister();
+        registerPage.registrationComponent().selectRegister();
     }
     public void verifyErrorMessage(String messageType, String message){
         RegisterPage registerPage = new RegisterPage(driver);
-        String actualErrorMessage= registerPage.registerForm().getErrorMessage(messageType);
+        String actualErrorMessage= registerPage.registrationComponent().getErrorMessage(messageType);
         Assert.assertEquals(actualErrorMessage, message, "Error message do not match");
     }
 }

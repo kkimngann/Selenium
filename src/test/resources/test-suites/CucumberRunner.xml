@@ -3,7 +3,8 @@
 <suite name="Regression Test" verbose="1" >
     <test name="Global UI" >
         <classes>
-            <class name="runner.CucumberRunner" />
+            <class name="runner.CucumberRunnerTest" />
         </classes>
     </test>
 </suite>
+

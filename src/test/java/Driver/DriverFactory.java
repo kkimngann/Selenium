@@ -27,12 +27,13 @@ public class DriverFactory {
         System.setProperty("webdriver.chrome.driver", chromeDriverLocation);
 
         ChromeOptions chromeOptions = new ChromeOptions();
-        //chromeOptions.addArguments("--incognito");
-        //WebDriver driver = new ChromeDriver(chromeOptions);
+        chromeOptions.addArguments("--incognito");
+        chromeOptions.addArguments("--remote-allow-origins=*");
+        WebDriver driver = new ChromeDriver(chromeOptions);
 
 
         //Using safari on macmini
-        WebDriver driver = new SafariDriver();
+        //WebDriver driver = new SafariDriver();
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
         return driver;

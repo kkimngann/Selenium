@@ -2,20 +2,22 @@ package models.components.registration;
 
 import models.components.Component;
 import models.components.ComponentCSSSelector;
+import models.components.ComponentXpathSelector;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import java.util.List;
 
-@ComponentCSSSelector(".page registration-page")
+@ComponentXpathSelector("//div[@class= \"page registration-page\"]")
 public class RegistrationComponent extends Component {
     private static final By inputGenderSel = By.cssSelector(".gender");
-    private static final By inputFirstNameSel = By.cssSelector("for=\"FirstName\"");
-    private static final By inputLastNameSel = By.cssSelector("for=\"LastName\"");
-    private static final By inputEmailSel = By.cssSelector("for=\"Email\"");
-    private static final By inputPasswordSel = By.cssSelector("for=\"Password\"");
-    private static final By inputConfirmPasswordSel = By.cssSelector("for=\"ConfirmPassword\"");
+    private static final By inputGenderClickableSel = By.cssSelector("input");
+    private static final By inputFirstNameSel = By.cssSelector("#FirstName");
+    private static final By inputLastNameSel = By.cssSelector("#LastName");
+    private static final By inputEmailSel = By.cssSelector("#Email");
+    private static final By inputPasswordSel = By.cssSelector("#Password");
+    private static final By inputConfirmPasswordSel = By.cssSelector("#ConfirmPassword");
     private static final By buttonRegisterSel = By.cssSelector("#register-button");
 
     public RegistrationComponent(WebDriver driver, WebElement component) {
@@ -26,7 +28,7 @@ public class RegistrationComponent extends Component {
         List<WebElement> genderOptionElem = component.findElements(inputGenderSel);
         for (WebElement webElement : genderOptionElem) {
             if(webElement.getText().trim().equals(gender)){
-                webElement.click();
+                webElement.findElement(inputGenderClickableSel).click();
                 break;
             }
         }
