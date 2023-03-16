@@ -4,10 +4,10 @@ import models.components.order.CheapComputerComponent;
 import org.openqa.selenium.WebDriver;
 import org.testng.annotations.Test;
 import test_flows.computer.OrderComputerFlow;
-import tests.BaseTest;
+import tests.BaseCheck;
 import url.Urls;
 
-public class BuyCheapComputer extends BaseTest implements Urls {
+public class BuyCheapComputer extends BaseCheck implements Urls {
 
     public BuyCheapComputer(WebDriver driver) {
         super(driver);
