@@ -12,11 +12,11 @@ import url.Urls;
 
 @Feature("src/test/resources/features/BuyCheapComputer.feature")
 public class BuyCheapComputer extends CucumberRunnerTest implements Urls {
-    OrderComputerFlow<CheapComputerComponent> orderComputerFlow = new OrderComputerFlow<>(driver, CheapComputerComponent.class);
+    OrderComputerFlow<CheapComputerComponent> orderComputerFlow = new OrderComputerFlow<>(getDriver(), CheapComputerComponent.class);
     @Given("User access to the computer detail page")
     public void gotoURL(){
         String pageUrl = demoBaseUrl + "build-your-cheap-own-computer";
-        driver.get(pageUrl);
+        getDriver().get(pageUrl);
     }
 
     @When("User select processor {string} and RAM {string}")
