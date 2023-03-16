@@ -75,6 +75,7 @@ public class DriverFactory {
             String hub = gridHub +"/wd/hub";
             try{
                 driver = new RemoteWebDriver(new URL(hub), desiredCapabilities);
+                driver.manage().window().maximize();
                 driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(15));
             }
             catch(Exception e){

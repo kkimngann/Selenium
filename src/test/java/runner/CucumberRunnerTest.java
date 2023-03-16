@@ -6,6 +6,7 @@ import io.cucumber.testng.CucumberOptions;
 import io.qameta.allure.Allure;
 import org.openqa.selenium.WebDriver;
 import org.testng.ITestResult;
+import org.testng.TestNG;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;

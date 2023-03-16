@@ -13,4 +13,4 @@ Feature: Registration
     Examples:
     |gender|firstname|lastname|email|password|confirmPassword|messageType|message|
     |Female  |         |Ngan    |kkimngann.jk@gmail.com|12345678|12345678|FirstName|First name is required.|
- #|Male  | Ngan    |    |kkimngann.jk@gmail.com|12345678|12345678|LastName|Last name is required.|
+    |Male  | Ngan    |    |kkimngann.jk@gmail.com|12345678|12345678|LastName|Last name is required.|
