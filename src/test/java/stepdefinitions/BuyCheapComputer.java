@@ -19,15 +19,14 @@ public class BuyCheapComputer extends CucumberRunnerTest implements Urls {
         getDriver().get(pageUrl);
     }
 
-    @When("User select processor {string} and RAM {string}")
-    public void selectProcessorAndRAM(String processor, String RAM){
-        orderComputerFlow.buildComputerSpecAndAddToCard(processor, RAM);
+    @When("User select processor {string} and RAM {string} and software {string}")
+    public void selectProcessorAndRAM(String processor, String RAM, String software){
+        orderComputerFlow.buildComputerSpecAndAddToCard(processor, RAM, software);
     }
     @Then("Verify item in cart correct data")
     public void verifyNumberItemInCart(){
         orderComputerFlow.gotoShoppingCart();
         orderComputerFlow.verifyShoppingCart();
-
     }
 
 }

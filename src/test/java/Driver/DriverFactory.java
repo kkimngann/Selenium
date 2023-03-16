@@ -71,7 +71,6 @@ public class DriverFactory {
             }
 
             String gridHub = System.getProperty("gridHub");
-
             String hub = gridHub +"/wd/hub";
             try{
                 driver = new RemoteWebDriver(new URL(hub), desiredCapabilities);

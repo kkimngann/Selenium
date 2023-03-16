@@ -1,5 +1,6 @@
 package models.components.order;
 
+import Driver.DriverFactory;
 import models.components.Component;
 import org.checkerframework.checker.units.qual.A;
 import org.openqa.selenium.By;
@@ -14,6 +15,8 @@ public abstract class ComputerEssentialComponent extends Component {
 
     public abstract String selectProcessorType(String type);
     public abstract String selectRAMType(String type);
+
+    public abstract String selectSoftware(String type);
 
     protected String selectCompOption(String type){
         String selectorStr = "//label[contains(text(), \"" + type + "\")]";
@@ -42,6 +45,14 @@ public abstract class ComputerEssentialComponent extends Component {
         }
         catch (Exception ignore){
         }
+    }
 
+    public double getDefaultPrice(){
+        String selectorStr = ".product-price";
+        return Double.parseDouble(component.findElement(By.xpath(selectorStr)).getText().trim());
+    }
+
+    public double getAdditionalPrice(String fullTextOption){
+        return 0;
     }
 }

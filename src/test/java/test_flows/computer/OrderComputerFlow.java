@@ -18,11 +18,12 @@ public class OrderComputerFlow <T extends ComputerEssentialComponent>{
         this.driver = driver;
         this.computerEssentialComponent = computerEssentialComponent;
     }
-    public void buildComputerSpecAndAddToCard(String processor, String RAM){
+    public void buildComputerSpecAndAddToCard(String processor, String RAM, String software){
         ComputerItemDetailPage computerItemDetailPage = new ComputerItemDetailPage(driver);
         T computerEssentialCompo = computerItemDetailPage.computerComponent(computerEssentialComponent);
         computerEssentialCompo.selectProcessorType(processor);
         computerEssentialCompo.selectRAMType(RAM);
+        computerEssentialCompo.selectSoftware(software);
         computerEssentialCompo.selectAddToCart();
 
         //waiting for added to cart successful
