@@ -9,6 +9,7 @@ import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Parameters;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -18,8 +19,11 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 @CucumberOptions(tags = "@Registration",
 
@@ -27,16 +31,31 @@ import java.util.GregorianCalendar;
         plugin = { "pretty", "json:target/cucumber-reports/cucumber.json",	"html:target/cucumber-reports/cucumberreport.html" }, monochrome = true)
 public class CucumberRunnerTest extends AbstractTestNGCucumberTests{
     protected static WebDriver driver;
-    @BeforeTest
-    public void initBrowserSession(){
-        driver = DriverFactory.getChromeDriver();
+    private final static List<DriverFactory> webDriverThreadPool = Collections.synchronizedList(new ArrayList<>());
+    private static ThreadLocal<DriverFactory> driverThread;
+    private String browser;
+
+    protected WebDriver getDriver(){
+        return driverThread.get().getDriver(this.browser);
+    }
+    @BeforeTest(description = "Init browser session")
+    @Parameters({"browser"})
+    public void initBrowserSession(String browser){
+        this.browser = browser;
+        driverThread = ThreadLocal.withInitial(() ->{
+            DriverFactory webdriverThread = new DriverFactory();
+            webDriverThreadPool.add(webdriverThread);
+            return webdriverThread;
+        });
+        driver = driverThread.get().getDriver(browser);
     }
 
     @AfterTest(alwaysRun = true)
     public void closeBrowserSession(){
-        if(driver != null){
-            driver.quit();
+        if(driverThread.get().getDriver(browser) != null){
+            driverThread.get().getDriver(browser).quit();
         }
+
     }
     @AfterMethod
     public void captureScreenshot(ITestResult result){
