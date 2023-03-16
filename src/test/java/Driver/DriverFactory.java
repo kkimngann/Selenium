@@ -13,6 +13,7 @@ import org.openqa.selenium.safari.SafariDriver;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
+import java.util.Properties;
 
 public class DriverFactory {
     private WebDriver driver;
@@ -69,7 +70,9 @@ public class DriverFactory {
                     break;
             }
 
-            String hub = " http://localhost:4444/wd/hub";
+            String gridHub = System.getProperty("gridHub");
+
+            String hub = gridHub +"/wd/hub";
             try{
                 driver = new RemoteWebDriver(new URL(hub), desiredCapabilities);
                 driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(15));
