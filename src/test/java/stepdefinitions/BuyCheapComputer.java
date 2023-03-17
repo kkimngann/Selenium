@@ -1,6 +1,8 @@
 package stepdefinitions;
 
 import io.cucumber.java.en.Then;
+import models.components.order.ComputerEssentialComponent;
+import models.pages.ComputerItemDetailPage;
 import org.testng.Assert;
 import runner.CucumberRunnerTest;
 import io.cucumber.java.en.Given;
@@ -12,7 +14,13 @@ import url.Urls;
 
 @Feature("src/test/resources/features/BuyCheapComputer.feature")
 public class BuyCheapComputer extends CucumberRunnerTest implements Urls {
-    OrderComputerFlow<CheapComputerComponent> orderComputerFlow = new OrderComputerFlow<>(getDriver(), CheapComputerComponent.class);
+    OrderComputerFlow orderComputerFlow = new OrderComputerFlow<>(driver, CheapComputerComponent.class);
+    Double defaultPrice = 0.0;
+    Double additionalProcessorPrice = 0.0;
+    Double additionalRAMPrice = 0.0;
+    Double additionalHDDPrice = 0.0;
+    Double additionalSoftwarePrice = 0.0;
+
     @Given("User access to the computer detail page")
     public void gotoURL(){
         String pageUrl = demoBaseUrl + "build-your-cheap-own-computer";
