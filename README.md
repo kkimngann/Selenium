@@ -14,6 +14,8 @@ Firefox driver geckodriver-v0.32.2
 
 mvn clean install --> install package
 
+cd selenium_grid
+
 java -jar selenium-server-4.8.1.jar hub --> start selenium grid server
 
 java -jar -Dwebdriver.gecko.driver=geckodriver -Dwebdriver.chrome.driver=chromedriver selenium-server-4.8.1.jar node --config node_config.json
