@@ -1,6 +1,6 @@
 # Selenium
 
-**Package: ** 
+**Package:** 
 
 Java version 11 - jdk-11.0.17.jdk
 
