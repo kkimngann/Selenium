@@ -9,6 +9,8 @@ import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
 
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class OrderComputerFlow <T extends ComputerEssentialComponent>{
     private final WebDriver driver;
@@ -65,17 +67,25 @@ public class OrderComputerFlow <T extends ComputerEssentialComponent>{
         Assert.assertEquals(actualQty, expectedQty, "Data do not match:\nActual: " + actualQty + "\nExpected: " + expectedQty);
         //verify value
         Double actualValue = cartItemRowComponent.subTotal();
-        Double expectedValue = pricePerUnit + 1;
+        Double expectedValue = pricePerUnit;
         Assert.assertEquals(actualValue, expectedValue, "Data do not match:\nActual: " + actualValue + "\nExpected: " + expectedValue);
 
     }
 
     public double getAdditionalPrice(String fullTextOption){
-        if(!fullTextOption.contains("[") || (!fullTextOption.contains("]"))){
+        /*if(!fullTextOption.contains("[") || (!fullTextOption.contains("]"))){
             return 0;
         }
         String price = fullTextOption.substring(fullTextOption.indexOf("[")+1,fullTextOption.indexOf("]"));
-        return Double.parseDouble(price);
+        return Double.parseDouble(price);*/
+        String pattern = ".*\\[\\+(.*)\\]";
+        Pattern p = Pattern.compile(pattern);
+        Matcher matcher = p.matcher(fullTextOption);
+        if(matcher.find()){
+            return Double.parseDouble(matcher.group(1));
+        }
+        return 0;
+
     }
 
 }
