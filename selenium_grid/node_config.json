@@ -27,7 +27,7 @@
 	"role": "node",
 	"unregisterIfStillDownAfter": 60000,
 	"downPollingLimit": 2,
-	"debug": false,
+	"debug": true,
 	"servlets": [],
 	"withoutServlets": [],
 	"custom": {}

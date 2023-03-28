@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-@CucumberOptions(tags = "@Registration",
+@CucumberOptions(tags = "@OrderComputer",
 
         features = "src/test/resources/features", glue = {"stepdefinitions"},
         plugin = { "pretty", "json:target/cucumber-reports/cucumber.json",	"html:target/cucumber-reports/cucumberreport.html" }, monochrome = true)
@@ -37,6 +37,7 @@ public class CucumberRunnerTest extends AbstractTestNGCucumberTests{
     private String browser;
 
     protected WebDriver getDriver(){
+        //return driverThread.get().getDriver(System.getProperty("browser"));
         return driverThread.get().getDriver(this.browser);
     }
     @BeforeTest(description = "Init browser session")
@@ -49,9 +50,10 @@ public class CucumberRunnerTest extends AbstractTestNGCucumberTests{
             return webdriverThread;
         });
         driver = driverThread.get().getDriver(browser);
+        //driver = driverThread.get().getDriver(System.getProperty("browser"));
     }
 
-    @AfterTest(alwaysRun = true)
+   @AfterTest(alwaysRun = true)
     public void closeBrowserSession(){
         if(driverThread.get().getDriver(browser) != null){
             driverThread.get().getDriver(browser).quit();

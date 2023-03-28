@@ -3,11 +3,8 @@ package stepdefinitions.global;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.qameta.allure.Allure;
-import io.qameta.allure.AllureId;
 import io.qameta.allure.Feature;
-import models.pages.BasePage;
 import runner.CucumberRunnerTest;
-import stepdefinitions.BaseSteps;
 import test_flows.registration.RegistrationFlow;
 
 @Feature("src/test/resources/features/Register.feature")
