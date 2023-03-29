@@ -2,6 +2,7 @@ allure-report
 allure-results
 screenshots
 .idea
+.DS_store
 target/
 pom.xml.tag
 pom.xml.releaseBackup
