@@ -75,7 +75,7 @@ public class DriverFactory {
             ChromeOptions chromeOptions = new ChromeOptions();
             chromeOptions.addArguments("--incognito");
             chromeOptions.addArguments("--remote-allow-origins=*");
-            //chromeOptions.addArguments("--headless");
+            chromeOptions.addArguments("--headless");
 
             String gridHub = System.getProperty("gridHub");
             String hub = gridHub +"/wd/hub";
