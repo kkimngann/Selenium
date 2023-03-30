@@ -1,6 +1,8 @@
 package stepdefinitions;
 
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
 import io.qameta.allure.Allure;
 import models.pages.BasePage;
 import runner.CucumberRunnerTest;

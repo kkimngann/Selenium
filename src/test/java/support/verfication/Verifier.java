@@ -26,6 +26,9 @@ public class Verifier {
             System.out.print("Actual is empty");
             throw new AssertionError("Actual result is diff with expected result");
         }
+    }
 
+    public static Boolean verifyTrue(Boolean actual){
+        return actual;
     }
 }
