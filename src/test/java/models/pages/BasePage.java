@@ -7,6 +7,10 @@ import models.components.global.header.HeaderMenuComponent;
 import models.components.product.ProductGridComponent;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+
+import java.util.List;
+import java.util.Random;
 
 public class BasePage extends Component {
     protected WebDriver driver;
@@ -30,6 +34,27 @@ public class BasePage extends Component {
     public HeaderMenuComponent headerMenuComponent(){
         return findComponent(HeaderMenuComponent.class,driver);
     }
+
+    public void gotoMenuWithRandomSubmenu(String mainMenu){
+        List<TopMenuComponent.MainCategoryItemComponent> mainCategoryItemComponents = topMenuComponent().mainCategoryItemElem();
+        for (TopMenuComponent.MainCategoryItemComponent mainCategoryItemComponent : mainCategoryItemComponents) {
+            if(mainCategoryItemComponent.getMainCategoryText().trim().equals(mainMenu)){
+                List<TopMenuComponent.CategoryItemComponent> categoryItemComponents = mainCategoryItemComponent.categoryItemComponents();
+                if(categoryItemComponents.size()> 0){
+                    Random rand = new Random();
+                    TopMenuComponent.CategoryItemComponent randomSubmenu = categoryItemComponents.get(rand.nextInt(categoryItemComponents.size()));
+                    randomSubmenu.clickSubmenu();
+                    break;
+                }else {
+                    mainCategoryItemComponent.clickMenu();
+                }
+
+            }
+
+        }
+    }
+
+
 
 
 }

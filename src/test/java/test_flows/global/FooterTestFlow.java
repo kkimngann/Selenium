@@ -4,6 +4,7 @@ import models.components.global.TopMenuComponent;
 import models.components.global.footer.FooterColumnComponent;
 import models.pages.BasePage;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
@@ -115,5 +116,10 @@ public class FooterTestFlow {
 
         //Verify Href
         Assert.assertEquals(actualHref, expectedHref, "[ERROR] Footer link do not match");;
+    }
+
+    public void gotoMenu() {
+        BasePage basePage = new BasePage(driver);
+
     }
 }

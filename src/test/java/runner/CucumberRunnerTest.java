@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-@CucumberOptions(tags = "@Registration",
+@CucumberOptions(tags = "@Footer",
 
         features = "src/test/resources/features", glue = {"stepdefinitions"},
         plugin = { "pretty", "json:target/cucumber-reports/cucumber.json",	"html:target/cucumber-reports/cucumberreport.html" }, monochrome = true)

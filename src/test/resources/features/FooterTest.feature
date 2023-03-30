@@ -1,6 +1,7 @@
 @tag
 Feature: Test footer show correctly in website
-
+  Background:
+    Given Access the test website
   @Test @Footer
   Scenario: Verify that footer show in screen correctly
     When User go to menu "BOOKS"
