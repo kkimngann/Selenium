@@ -7,6 +7,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 @ComponentXpathSelector("//div[@class= \"page registration-page\"]")
@@ -61,5 +63,4 @@ public class RegistrationComponent extends Component {
     public String getErrorMessage(String messageType){
         return component.findElement(By.cssSelector(".field-validation-error [for=\""  + messageType +"\"]")).getText().trim();
     }
-
 }

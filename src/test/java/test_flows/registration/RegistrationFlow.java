@@ -27,7 +27,6 @@ public class RegistrationFlow {
         registerPage.registrationComponent().inputEmail(email);
         registerPage.registrationComponent().inputPassword(password);
         registerPage.registrationComponent().inputConfirmPassword(confirmPassword);
-        registerPage.registrationComponent().selectRegister();
     }
 
     public void selectRegister(){
@@ -38,5 +37,8 @@ public class RegistrationFlow {
         RegisterPage registerPage = new RegisterPage(driver);
         String actualErrorMessage= registerPage.registrationComponent().getErrorMessage(messageType);
         Assert.assertEquals(actualErrorMessage, message, "Error message do not match");
+    }
+
+    public void checkCorrectUserEmail(String expectedEmail) {
     }
 }
