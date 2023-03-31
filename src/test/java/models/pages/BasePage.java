@@ -47,6 +47,7 @@ public class BasePage extends Component {
                     break;
                 }else {
                     mainCategoryItemComponent.clickMenu();
+                    break;
                 }
 
             }

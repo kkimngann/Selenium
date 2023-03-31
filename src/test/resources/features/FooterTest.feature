@@ -8,9 +8,9 @@ Feature: Test footer show correctly in website
     Then Verify that footer shown correctly
     When User go to menu "COMPUTERS"
     Then Verify that footer shown correctly
-    When User go to menu "ELECTRICS"
+    When User go to menu "ELECTRONICS"
     Then Verify that footer shown correctly
-    When User go to menu "APPARELS & SHOES"
+    When User go to menu "APPAREL & SHOES"
     Then Verify that footer shown correctly
     When User go to menu "DIGITAL DOWNLOADS"
     Then Verify that footer shown correctly

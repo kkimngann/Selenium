@@ -30,21 +30,32 @@ public class FooterTestFlow {
         BasePage basePage = new BasePage(driver);
         verifyInformationColumn(basePage.footerComponent().informationColumnComponent());
         verifyCustomerServiceColumn(basePage.footerComponent().customerServiceColumnComponent());
-//        verifyMyAccountColumn(basePage.footerComponent().myAccountColumnComponent());
-//        verifyFollowUsColumn(basePage.footerComponent().followUsColumnComponent());
+        verifyMyAccountColumn(basePage.footerComponent().myAccountColumnComponent());
+        verifyFollowUsColumn(basePage.footerComponent().followUsColumnComponent());
     }
 
     private void verifyFollowUsColumn(FooterColumnComponent footerColumnComponent) {
-        List<String> expectedLinkText = new ArrayList<>();
-        List<String> expectedHref = new ArrayList<>();
-        testFooterColumn(footerColumnComponent, expectedLinkText, expectedHref);
-
+        String baseUrl = Urls.demoBaseUrl;
+        List<String> expectedLinkTexts = Arrays.asList("Facebook", "Twitter", "RSS", "YouTube", "Google+");
+        String fbUrl= "http://www.facebook.com/nopCommerce";
+        String TwitterUrl= "https://twitter.com/nopCommerce";
+        String rssUrl= baseUrl + "news/rss/1";
+        String youtubeUrl= "http://www.youtube.com/user/nopCommerce";
+        String googleUrl= "https://plus.google.com/+nopcommerce";
+        List<String> expectedHrefs = Arrays.asList(fbUrl, TwitterUrl, rssUrl, youtubeUrl, googleUrl);
+        testFooterColumn(footerColumnComponent, expectedLinkTexts, expectedHrefs);
     }
 
     private void verifyMyAccountColumn(FooterColumnComponent footerColumnComponent) {
-        List<String> expectedLinkText = new ArrayList<>();
-        List<String> expectedHref = new ArrayList<>();
-        testFooterColumn(footerColumnComponent, expectedLinkText, expectedHref);
+        String baseUrl = Urls.demoBaseUrl;
+        List<String> expectedLinkTexts = Arrays.asList(
+                "My account", "Orders", "Addresses", "Shopping cart",
+                "Wishlist");
+        List<String> expectedHrefs = Arrays.asList(
+                baseUrl + "customer/info", baseUrl + "customer/orders", baseUrl + "customer/addresses", baseUrl + "cart",
+                baseUrl + "wishlist");
+
+        testFooterColumn(footerColumnComponent, expectedLinkTexts, expectedHrefs);
     }
 
     private void verifyCustomerServiceColumn(FooterColumnComponent footerColumnComponent) {
@@ -68,36 +79,6 @@ public class FooterTestFlow {
                 baseUrl + "about-us", baseUrl + "contactus");
         testFooterColumn(footerColumnComponent, expectedLinkTexts, expectedHrefs);
     }
-
-    public void verifyProductCategoryFooterComponent(){
-        //Random pickup component
-        BasePage basePage = new BasePage(driver);
-        TopMenuComponent topMenuComponent = basePage.topMenuComponent();
-        List<TopMenuComponent.MainCategoryItemComponent> mainCategoryItemComponents = topMenuComponent.mainCategoryItemElem();
-        if(mainCategoryItemComponents.isEmpty()){
-            Assert.fail("[ERROR] Top menu item is empty");
-        }
-        TopMenuComponent.MainCategoryItemComponent mainCategoryItemComponentRandom = mainCategoryItemComponents.get(new SecureRandom().nextInt(mainCategoryItemComponents.size()));
-        String hrefCategoryRandom = mainCategoryItemComponentRandom.mainCategoryLinkElement().getAttribute("href");
-
-        //get sublist
-        List<TopMenuComponent.CategoryItemComponent> categoryItemComponents = mainCategoryItemComponentRandom.categoryItemComponents();
-        if(categoryItemComponents.isEmpty()){
-            mainCategoryItemComponentRandom.mainCategoryLinkElement().click();
-        }
-        else{
-            TopMenuComponent.CategoryItemComponent categoryItemComponentRandom = categoryItemComponents.get(new SecureRandom().nextInt(categoryItemComponents.size()));
-            hrefCategoryRandom = categoryItemComponentRandom.getComponent().getAttribute("href");
-            categoryItemComponentRandom.getComponent().click();
-        }
-
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        wait.until(ExpectedConditions.urlContains(hrefCategoryRandom));
-
-        //Verify footer component
-        verifyFooterComponent();
-    }
-
     public void testFooterColumn(FooterColumnComponent footerColumnComponent, List<String> expectedLinkText, List<String> expectedHref){
         List<String> actualLinkText = new ArrayList<>();
         List<String> actualHref = new ArrayList<>();
@@ -118,8 +99,9 @@ public class FooterTestFlow {
         Assert.assertEquals(actualHref, expectedHref, "[ERROR] Footer link do not match");;
     }
 
-    public void gotoMenu() {
+    public void gotoMenu(String mainMenu) {
         BasePage basePage = new BasePage(driver);
+        basePage.gotoMenuWithRandomSubmenu(mainMenu);
 
     }
 }

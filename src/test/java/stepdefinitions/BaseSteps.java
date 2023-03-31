@@ -16,17 +16,18 @@ public class BaseSteps extends CucumberRunnerTest implements Urls {
     @Given("Access the test website")
     public void gotoTestPage(){
         Allure.step("Access the test website");
-        driver.get(Urls.demoBaseUrl);
+        getDriver().get(Urls.demoBaseUrl);
     }
 
     @When("User go to menu {string}")
     public void userGoToMenu(String menuName) {
         Allure.step(String.format("User go to menu %s", menuName));
-        footerTestFlow.gotoMenu();
+        footerTestFlow.gotoMenu(menuName);
     }
 
     @Then("Verify that footer shown correctly")
     public void verifyThatFooterShownCorrectly() {
-        System.out.println("true");
+        Allure.step("Verify that footer shown correctly");
+        footerTestFlow.verifyFooterComponent();
     }
 }
