@@ -4,11 +4,11 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.qameta.allure.Allure;
-import runner.CucumberRunnerTest;
+import runner.Order_CucumberRunnerTest;
 import test_flows.global.FooterTestFlow;
 import url.Urls;
 
-public class BaseSteps extends CucumberRunnerTest implements Urls {
+public class BaseSteps extends Order_CucumberRunnerTest implements Urls {
     FooterTestFlow footerTestFlow = new FooterTestFlow(driver);
     @Given("Access the test website")
     public void gotoTestPage(){

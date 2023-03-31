@@ -5,12 +5,12 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Feature;
-import runner.CucumberRunnerTest;
+import runner.Order_CucumberRunnerTest;
 import test_flows.global.LoginTestFlow;
 import url.Urls;
 
 @Feature("src/test/resources/features/Login.feature")
-public class LoginSteps extends CucumberRunnerTest implements Urls {
+public class LoginSteps extends Order_CucumberRunnerTest implements Urls {
     LoginTestFlow loginTestFlow = new LoginTestFlow(driver);
     @When("User go to login screen")
     public void goToScreenRegistration(){

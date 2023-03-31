@@ -80,7 +80,7 @@ public class DriverFactory {
             String gridHub = System.getProperty("gridHub");
             String hub = gridHub +"/wd/hub";
             try{
-                desiredCapabilities.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
+                //desiredCapabilities.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
                 driver = new RemoteWebDriver(new URL(hub), desiredCapabilities);
                 driver.manage().window().maximize();
                 driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(15));
