@@ -36,7 +36,7 @@ jobs:
     docker:
       - image: cimg/openjdk:11.0.18-browsers
     steps:
-      - git-checkout
+      - checkout
       - browser-tools/install-browser-tools:
           chrome-version: 111.0.5563.147
           firefox-version: 111.0.1
