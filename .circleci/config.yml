@@ -16,7 +16,7 @@ jobs:
       - checkout
       - browser-tools/install-browser-tools:
           chrome-version: 111.0.5563.147
-          # chromedriver-install-dir: ~/project/chromedriver
+          chromedriver-install-dir: ~/project/chromedriver
           firefox-version: 111.0.1
           # geckodriver-install-dir: ~/project/geckodriver
       - run:
@@ -49,7 +49,7 @@ jobs:
           command: |
             pkill Xvfb
             xvfb-run java -Dwebdriver.gecko.driver=geckodriver -Dwebdriver.chrome.driver=chromedriver -jar selenium-server-4.8.2.jar standalone
-          background: true
+          # background: true
   test:
     docker:
       - image: cimg/openjdk:11.0.18-browsers
@@ -68,6 +68,4 @@ workflows:
       - start_selenium:
           requires:
             - setup
-      - test:
-          requires:
-            - start_selenium
+      - test
