@@ -28,11 +28,12 @@ selenium_server_start: &selenium_server_start
   run:
     name: Start selenium server
     command: xvfb-run java -Dwebdriver.gecko.driver=geckodriver -Dwebdriver.chrome.driver=chromedriver -jar selenium-server-4.8.2.jar standalone
+    background: true
 
 ############################# JOBS ########################################
 # Define the jobs we want to run for this project
 jobs:
-  setup:
+  test:
     docker:
       - image: cimg/openjdk:11.0.18-browsers
     steps:
@@ -51,11 +52,7 @@ jobs:
           name: Check installed versions
       - *install_dependencies
       - *selenium_server_start
-
-  test:
-    docker:
-      - image: cimg/openjdk:11.0.18-browsers
-    steps:
+      
       - run:
           name: Run tests
           command: |
@@ -67,7 +64,4 @@ jobs:
 workflows:
   test:
     jobs:
-      - setup
-      - test:
-          requires:
-            - setup
+      - test
