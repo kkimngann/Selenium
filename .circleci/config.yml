@@ -77,7 +77,7 @@ jobs:
       - save_cache:
           paths:
             - ~/.m2
-          key: v1-deps-{{ checksum "pom.xml" }}
+          key: v1-dependencies-{{ checksum "pom.xml" }}
 
       - store_test_results:
           path: allure-results
