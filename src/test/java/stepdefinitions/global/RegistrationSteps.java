@@ -4,13 +4,13 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Feature;
-import runner.CucumberRunnerTest;
+import runner.Order_CucumberRunnerTest;
 import test_flows.registration.RegistrationFlow;
 
 import java.util.Date;
 
 @Feature("src/test/resources/features/Register.feature")
-public class RegistrationSteps extends CucumberRunnerTest {
+public class RegistrationSteps extends Order_CucumberRunnerTest {
     RegistrationFlow registrationFlow = new RegistrationFlow(driver);
     private String emailTest = "";
     @When("User go to register screen")

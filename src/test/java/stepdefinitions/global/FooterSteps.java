@@ -1,10 +1,10 @@
 package stepdefinitions.global;
 
 import io.qameta.allure.Feature;
-import runner.CucumberRunnerTest;
+import runner.Order_CucumberRunnerTest;
 import url.Urls;
 
 @Feature("src/test/resources/features/FooterTest.feature")
-public class FooterSteps extends CucumberRunnerTest implements Urls {
+public class FooterSteps extends Order_CucumberRunnerTest implements Urls {
 
 }

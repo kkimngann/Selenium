@@ -1,6 +1,7 @@
 @tag
 Feature: Authorization
-
+  Background:
+    Given Access the test website
   @Test @Login @Authorize @Invalid
   Scenario: Verify that user can not login with invalid account
     When User go to login screen

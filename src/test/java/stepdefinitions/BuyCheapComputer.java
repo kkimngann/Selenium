@@ -3,7 +3,7 @@ package stepdefinitions;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.qameta.allure.Allure;
-import runner.CucumberRunnerTest;
+import runner.Order_CucumberRunnerTest;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import io.qameta.allure.Feature;
@@ -12,7 +12,7 @@ import test_flows.computer.OrderComputerFlow;
 import url.Urls;
 
 @Feature("src/test/resources/features/BuyCheapComputer.feature")
-public class BuyCheapComputer extends CucumberRunnerTest implements Urls {
+public class BuyCheapComputer extends Order_CucumberRunnerTest implements Urls {
     OrderComputerFlow orderComputerFlow = new OrderComputerFlow<>(driver, CheapComputerComponent.class);
     Double defaultPrice = 0.0;
     Double additionalProcessorPrice = 0.0;

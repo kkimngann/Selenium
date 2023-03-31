@@ -19,17 +19,14 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.*;
 
-@CucumberOptions(tags = "@Footer or @OrderComputer",
+@CucumberOptions(tags = "@Footer",
 
         features = "src/test/resources/features", glue = {"stepdefinitions"},
         plugin = { "pretty", "json:target/cucumber-reports/cucumber.json",	"html:target/cucumber-reports/cucumberreport.html" }, monochrome = true)
-public class CucumberRunnerTest extends AbstractTestNGCucumberTests{
+public class Footer_CucumberRunnerTest extends AbstractTestNGCucumberTests{
     protected static WebDriver driver;
     private final static List<DriverFactory> webDriverThreadPool = Collections.synchronizedList(new ArrayList<>());
     private static ThreadLocal<DriverFactory> driverThread;
