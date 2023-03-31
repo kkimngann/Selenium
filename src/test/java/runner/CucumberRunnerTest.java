@@ -6,7 +6,6 @@ import io.cucumber.testng.CucumberOptions;
 import io.qameta.allure.Allure;
 import org.openqa.selenium.WebDriver;
 import org.testng.ITestResult;
-import org.testng.TestNG;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
@@ -26,7 +25,7 @@ import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-@CucumberOptions(tags = "@Footer",
+@CucumberOptions(tags = "@Footer or @OrderComputer",
 
         features = "src/test/resources/features", glue = {"stepdefinitions"},
         plugin = { "pretty", "json:target/cucumber-reports/cucumber.json",	"html:target/cucumber-reports/cucumberreport.html" }, monochrome = true)
