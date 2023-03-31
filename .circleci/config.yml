@@ -39,7 +39,7 @@ jobs:
             wget https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.8.0/selenium-server-4.8.2.jar
             wget http://www.java2s.com/Code/JarDownload/testng/testng-6.8.7.jar.zip
             unzip testng-6.8.7.jar.zip
-            sudo ln -s /usr/
+            sudo ln -s /usr/bin/chromedriver ~/project/chromedriver
   
   start_selenium:
     docker:
