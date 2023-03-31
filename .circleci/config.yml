@@ -52,10 +52,11 @@ jobs:
           name: Check installed versions
       - *install_dependencies
       - *selenium_server_start
-      
+
       - run:
           name: Run tests
           command: |
+            unset DISPLAY
             mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DgridHub=http://localhost:4444
             allure generate --clean
 
