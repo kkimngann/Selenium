@@ -16,7 +16,7 @@ jobs:
       - checkout
       - browser-tools/install-browser-tools:
           chrome-version: 111.0.5563.147
-          chromedriver-install-dir: ~/project/chromedriver
+          # chromedriver-install-dir: ~/project/chromedriver
           firefox-version: 111.0.1
           # geckodriver-install-dir: ~/project/geckodriver
       - run:
