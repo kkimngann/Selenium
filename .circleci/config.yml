@@ -15,7 +15,7 @@ jobs:
     steps:
       - checkout
       - browser-tools/install-browser-tools:
-          chrome-version: 111.0.5563
+          chrome-version: 111.0.5563.147
           # chromedriver-install-dir: ~/project/chromedriver
           firefox-version: 111.0.1
           # geckodriver-install-dir: ~/project/geckodriver
@@ -56,7 +56,7 @@ jobs:
       - image: cimg/openjdk:11.0.18-browsers
     steps:
       - run:
-mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DgridHub=http://localhost:4444          name: Run tests
+          name: Run tests
           command: |
             mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DgridHub=http://localhost:4444
             allure generate --clean
