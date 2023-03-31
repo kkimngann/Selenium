@@ -45,12 +45,10 @@ jobs:
     docker:
       - image: cimg/openjdk:11.0.18-browsers
     steps:
+      - run: pkill Xvfb
       - run:
-          name: Start Selenium
-          command: |
-            pkill Xvfb
-            xvfb-run java -Dwebdriver.gecko.driver=geckodriver -Dwebdriver.chrome.driver=chromedriver -jar selenium-server-4.8.2.jar standalone
-          # background: true
+          name: start selenium 
+          command: xvfb-run java -Dwebdriver.gecko.driver=geckodriver -Dwebdriver.chrome.driver=chromedriver -jar selenium-server-4.8.2.jar standalone
   test:
     docker:
       - image: cimg/openjdk:11.0.18-browsers
