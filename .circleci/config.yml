@@ -38,14 +38,14 @@ jobs:
       - image: cimg/openjdk:11.0.18-browsers
       
     # Run test in parallel
-    parallelism: 5
+    parallelism: 2
     steps:
       - checkout
 
       # Download and cache dependencies
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "package.json" }}
+          - v1-dependencies-{{ checksum "pom.xml" }}
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
@@ -70,13 +70,13 @@ jobs:
           name: Run tests
           command: |
             unset DISPLAY
-            mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DgridHub=http://localhost:4444
+            mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DgridHub=http://localhost:4444 | circleci tests split --split-by=timings)
             allure generate --clean
 
       - save_cache:
           paths:
             - ~/.m2
-          key: v1-deps-{{ checksum "package-lock.json" }}
+          key: v1-deps-{{ checksum "pom.xml" }}
 
       - store_test_results:
           path: allure-results
