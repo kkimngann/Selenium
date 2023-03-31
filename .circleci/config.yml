@@ -7,18 +7,39 @@ general:
 orbs:
   browser-tools: circleci/browser-tools@1.4.1
 
+################################# ANCHORS #################################
+# Define the commands we want to use in our jobs
+install_dependencies: &install_dependencies
+  run:
+    name: Install dependencies
+    command: |
+      sudo apt update -y
+      sudo apt-get install openjdk-8-jdk -y
+      sudo apt autoremove -y
+      wget https://github.com/allure-framework/allure2/releases/download/2.21.0/allure_2.21.0-1_all.deb
+      sudo dpkg -i allure_*
+      sudo apt-get install -f
+      wget https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.8.0/selenium-server-4.8.2.jar
+      wget http://www.java2s.com/Code/JarDownload/testng/testng-6.8.7.jar.zip
+      unzip testng-6.8.7.jar.zip
+      sudo ln -s /usr/local/bin/chromedriver ~/project/chromedriver
+
+selenium_server_start: &selenium_server_start
+  run:
+    name: Start selenium server
+    command: xvfb-run java -Dwebdriver.gecko.driver=geckodriver -Dwebdriver.chrome.driver=chromedriver -jar selenium-server-4.8.2.jar standalone
+
+############################# JOBS ########################################
 # Define the jobs we want to run for this project
 jobs:
   setup:
     docker:
       - image: cimg/openjdk:11.0.18-browsers
     steps:
-      - checkout
+      - git-checkout
       - browser-tools/install-browser-tools:
           chrome-version: 111.0.5563.147
-          # chromedriver-install-dir: ~/project/chromedriver
           firefox-version: 111.0.1
-          # geckodriver-install-dir: ~/project/geckodriver
       - run:
           command: |
             google-chrome --version
@@ -26,29 +47,11 @@ jobs:
             geckodriver --version
             chromedriver --version
             java -jar /usr/local/bin/selenium.jar --version
-          name: Check install
-      - run:
-          name: Install dependencies
-          command: |
-            sudo apt update -y
-            sudo apt-get install openjdk-8-jdk -y
-            sudo apt autoremove -y
-            wget https://github.com/allure-framework/allure2/releases/download/2.21.0/allure_2.21.0-1_all.deb
-            sudo dpkg -i allure_*
-            sudo apt-get install -f
-            wget https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.8.0/selenium-server-4.8.2.jar
-            wget http://www.java2s.com/Code/JarDownload/testng/testng-6.8.7.jar.zip
-            unzip testng-6.8.7.jar.zip
-            sudo ln -s /usr/local/bin/chromedriver ~/project/chromedriver
-  
-  start_selenium:
-    docker:
-      - image: cimg/openjdk:11.0.18-browsers
-    steps:
-      - run: pkill Xvfb
-      - run:
-          name: start selenium 
-          command: xvfb-run java -Dwebdriver.gecko.driver=geckodriver -Dwebdriver.chrome.driver=chromedriver -jar selenium-server-4.8.2.jar standalone
+            pkill Xvfb
+          name: Check installed versions
+      - *install_dependencies
+      - *selenium_server_start
+
   test:
     docker:
       - image: cimg/openjdk:11.0.18-browsers
@@ -59,14 +62,12 @@ jobs:
             mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DgridHub=http://localhost:4444
             allure generate --clean
 
+################################ WORKFLOWS ################################
 # Orchestrate our job run sequence
 workflows:
   test:
     jobs:
       - setup
-      - start_selenium:
-          requires:
-            - setup
       - test:
           requires:
-            - start_selenium
+            - setup
