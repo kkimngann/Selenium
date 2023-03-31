@@ -15,7 +15,7 @@ jobs:
     steps:
       - checkout
       - browser-tools/install-browser-tools:
-          chrome-version: 111.0.5563.147
+          chrome-version: 111.0.5563
           # chromedriver-install-dir: ~/project/chromedriver
           firefox-version: 111.0.1
           # geckodriver-install-dir: ~/project/geckodriver
@@ -39,7 +39,7 @@ jobs:
             wget https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.8.0/selenium-server-4.8.2.jar
             wget http://www.java2s.com/Code/JarDownload/testng/testng-6.8.7.jar.zip
             unzip testng-6.8.7.jar.zip
-            sudo ln -s /usr/bin/chromedriver ~/project/chromedriver
+            sudo ln -s /usr/local/bin/chromedriver ~/project/chromedriver
   
   start_selenium:
     docker:
@@ -56,7 +56,7 @@ jobs:
       - image: cimg/openjdk:11.0.18-browsers
     steps:
       - run:
-          name: Run tests
+mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DgridHub=http://localhost:4444          name: Run tests
           command: |
             mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DgridHub=http://localhost:4444
             allure generate --clean
