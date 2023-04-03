@@ -70,7 +70,8 @@ jobs:
           name: Run tests
           command: |
             unset DISPLAY
-            circleci tests glob "src/test/java/runner/*.java" | circleci tests split | xargs -I {} mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DgridHub=http://localhost:4444
+            circleci tests glob "src/test/java/runner/*.java" | circleci tests split
+            mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DgridHub=http://localhost:4444
             # mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DgridHub=http://localhost:4444 | circleci tests split --split-by=timings)
             allure generate --clean
 
