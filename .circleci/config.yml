@@ -70,7 +70,8 @@ jobs:
           name: Run tests
           command: |
             unset DISPLAY
-            circleci tests glob "src/test/java/runner/*.java" | circleci tests split
+            circleci tests glob "src/test/java/runner/*.java" | circleci tests split > javafiles.txt
+            cat javafiles.txt
             mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DgridHub=http://localhost:4444
             allure generate --clean
 
