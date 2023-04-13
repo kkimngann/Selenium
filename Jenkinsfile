@@ -52,7 +52,8 @@ pipeline {
     }
 
     post {
-        publishHTML (target : [allowMissing: false,
+        always {
+            publishHTML (target : [allowMissing: false,
             alwaysLinkToLastBuild: true,
             keepAll: true,
             reportDir: 'allure-report',
@@ -60,5 +61,6 @@ pipeline {
             reportName: 'allure-report',
             reportTitles: '', 
             useWrapperFileDirectly: true])
+        }
     }
 }
