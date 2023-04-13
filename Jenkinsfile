@@ -1,46 +1,65 @@
 pipeline {
-    // Setup worker to run the pipeline
     agent {
-        node { label 'autotest_slave'}
-    }
-    environment {
-        PATH = "/opt/apache-maven-3.9.1/bin:$PATH"
-        LANG = 'en_US.UTF-8'
-        LANGUAGE = 'en_US.UTF-8'
-        LC_ALL = 'en_US.UTF-8'
+        kubernetes {
+        yaml '''
+            apiVersion: v1
+            kind: Pod
+            metadata:
+                labels:
+                    jenkin-job: selenium
+            spec:
+                containers:
+                - name: maven
+                  image: maven:3.8.6-openjdk-11-slim
+                  command:
+                  - cat
+                  tty: true
+                  volumeMounts:
+                  - name: m2
+                    mountPath: /root/.m2
+                - name: allure
+                  image: frankescobar/allure-docker-service:2.19.0
+                  command:
+                  - cat
+                  tty: true
+                volumes:
+                - name: m2
+                  emptyDir: {}
+            '''
+        }
     }
 
     stages {
-        stage('Build'){
+        stage('Automation Test'){
             steps {
                 script {
-                    sh '''
-                        mvn clean test -DsuiteFile='src/test/resources/test-suites/CucumberRunner.xml' -DgridHub='http://localhost:4444'
-                        allure generate --clean
-                    '''
+                    container('maven') {
+                        sh 'mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DgridHub=http://moon.agileops.int/'
+                    }
+                }
+            }
+        }
+
+        stage('Allure Report'){
+            steps {
+                script {
+                    container('allure') {
+                        sh 'allure generate --clean -o allure-report'
+                    }
                 }
             }
         }
     }
 
     post {
-        success {
-            // Notify slack channel, email, etc.
-            echo 'success'
-            
-            // Publish the report
-            publishHTML (target : [allowMissing: false,
-                alwaysLinkToLastBuild: true,
-                keepAll: true,
-                reportDir: 'allure-report',
-                reportFiles: 'index.html',
-                reportName: 'allure-report',
-                reportTitles: '', 
-                useWrapperFileDirectly: true])
-        }
-        failure {
-            // Notify slack channel, email, etc.
-            echo 'failure'
+        publishHTML (target : [allowMissing: false,
+            alwaysLinkToLastBuild: true,
+            keepAll: true,
+            reportDir: 'allure-report',
+            reportFiles: 'index.html',
+            reportName: 'allure-report',
+            reportTitles: '', 
+            useWrapperFileDirectly: true])
         }
     }
 }
