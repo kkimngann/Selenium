@@ -60,6 +60,5 @@ pipeline {
             reportName: 'allure-report',
             reportTitles: '', 
             useWrapperFileDirectly: true])
-        }
     }
 }
