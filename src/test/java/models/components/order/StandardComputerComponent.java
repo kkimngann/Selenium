@@ -31,6 +31,11 @@ public class StandardComputerComponent extends ComputerEssentialComponent{
         return selectOption(RAMDropdownElem, type);
     }
 
+    @Override
+    public String selectSoftware(String type){
+        return selectCompOption(type);
+    }
+
     private String selectOption(WebElement dropdownElement, String type){
         Select select = new Select(dropdownElement);
         List<WebElement> allOptions = select.getOptions();

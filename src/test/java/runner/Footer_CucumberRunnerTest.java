@@ -1,44 +1,61 @@
-package tests;
+package runner;
 
 import Driver.DriverFactory;
+import io.cucumber.testng.AbstractTestNGCucumberTests;
+import io.cucumber.testng.CucumberOptions;
 import io.qameta.allure.Allure;
 import org.openqa.selenium.WebDriver;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Parameters;
 
-import java.awt.Rectangle;
-import java.awt.Robot;
-import java.awt.Toolkit;
-import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.*;
 
-public class BaseCheck {
+@CucumberOptions(tags = "@Footer",
+
+        features = "src/test/resources/features", glue = {"stepdefinitions"},
+        plugin = { "pretty", "json:target/cucumber-reports/cucumber.json",	"html:target/cucumber-reports/cucumberreport.html" }, monochrome = true)
+public class Footer_CucumberRunnerTest extends AbstractTestNGCucumberTests{
     protected static WebDriver driver;
+    private final static List<DriverFactory> webDriverThreadPool = Collections.synchronizedList(new ArrayList<>());
+    private static ThreadLocal<DriverFactory> driverThread;
+    private String browser;
 
-    public BaseCheck(WebDriver driver) {
+    protected WebDriver getDriver(){
+        //return driverThread.get().getDriver(System.getProperty("browser"));
+        return driverThread.get().getDriver(this.browser);
+    }
+    @BeforeTest(description = "Init browser session")
+    @Parameters({"browser"})
+    public void initBrowserSession(String browser){
+        this.browser = browser;
+        driverThread = ThreadLocal.withInitial(() ->{
+            DriverFactory webdriverThread = new DriverFactory();
+            webDriverThreadPool.add(webdriverThread);
+            return webdriverThread;
+        });
+        driver = driverThread.get().getDriver(browser);
+        //driver = driverThread.get().getDriver(System.getProperty("browser"));
     }
 
-    @BeforeTest
-    public void initBrowserSession(){
-        driver = DriverFactory.getChromeDriver();
-    }
-
-    @AfterTest(alwaysRun = true)
+   @AfterTest(alwaysRun = true)
     public void closeBrowserSession(){
-        if(driver != null){
-            driver.quit();
+        if(driverThread.get().getDriver(browser) != null){
+            driverThread.get().getDriver(browser).quit();
         }
-    }
 
+    }
     @AfterMethod
     public void captureScreenshot(ITestResult result){
         if(true){
@@ -57,7 +74,6 @@ public class BaseCheck {
             takeScreenshot(fileLocation);
         }
     }
-
 
     private void takeScreenshot(String fileLocation){
         try {

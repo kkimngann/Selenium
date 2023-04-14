@@ -3,16 +3,16 @@ package stepdefinitions.global;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.qameta.allure.Allure;
-import io.qameta.allure.AllureId;
 import io.qameta.allure.Feature;
-import models.pages.BasePage;
-import runner.CucumberRunnerTest;
-import stepdefinitions.BaseSteps;
+import runner.Order_CucumberRunnerTest;
 import test_flows.registration.RegistrationFlow;
 
+import java.util.Date;
+
 @Feature("src/test/resources/features/Register.feature")
-public class RegistrationSteps extends CucumberRunnerTest {
+public class RegistrationSteps extends Order_CucumberRunnerTest {
     RegistrationFlow registrationFlow = new RegistrationFlow(driver);
+    private String emailTest = "";
     @When("User go to register screen")
     public void goToScreenRegistration(){
         Allure.step("User go to register screen");
@@ -22,7 +22,11 @@ public class RegistrationSteps extends CucumberRunnerTest {
     @When("User input data {string}, {string}, {string}, {string}, {string}, {string}")
     public void inputData(String gender, String firstname, String lastname, String email, String password, String confirmPassword){
         Allure.step("User input data:" + gender +", "+ firstname +", "+ lastname +", "+ email+", "+ password +", "+ confirmPassword);
-        registrationFlow.registerWithData(gender, firstname, lastname, email, password, confirmPassword);
+        emailTest = email;
+        if(emailTest.equals("auto")){
+            emailTest = "auto_email_test" + new Date().getTime() + "@yopmail.com";
+        }
+        registrationFlow.registerWithData(gender, firstname, lastname, emailTest, password, confirmPassword);
     }
 
     @When("User select register")
@@ -33,8 +37,17 @@ public class RegistrationSteps extends CucumberRunnerTest {
 
     @Then("Error message {string} invalid show correctly {string}")
     public void verifyMessage(String messageType, String message){
-        Allure.step("Check error message");
+        Allure.step(String.format("Error message %s invalid show correctly %s", messageType, message));
         registrationFlow.verifyErrorMessage(messageType, message);
+    }
+
+    @Then("Show correct user email {string} after registration")
+    public void showCorrectUserEmail(String expectedEmail) {
+        Allure.step(String.format("Show correct user email %s", expectedEmail));
+        if(expectedEmail.equals("auto")){
+            expectedEmail = emailTest;
+        }
+        registrationFlow.checkCorrectUserEmail(expectedEmail);
     }
 
 }

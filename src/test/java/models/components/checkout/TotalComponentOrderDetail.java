@@ -1,4 +1,4 @@
-package models.components.cart;
+package models.components.checkout;
 
 import models.components.Component;
 import models.components.ComponentCSSSelector;
@@ -10,14 +10,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@ComponentCSSSelector(".cart-footer .totals")
-public class TotalComponent extends Component {
-    private static final By priceTableSel = By.cssSelector(".cart-total tr");
+@ComponentCSSSelector(".cart-total")
+public class TotalComponentOrderDetail extends Component {
+    private static final By priceTableSel = By.cssSelector("tr");
     private static final By priceTypeSel = By.cssSelector(".cart-total-left");
     private static final By priceValueSel = By.cssSelector(".cart-total-right");
     private static final By termOfServiceSel = By.cssSelector("#termsofservice");
     private static final By buttonCheckoutSel = By.cssSelector(".checkout-buttons");
-    public TotalComponent(WebDriver driver, WebElement component) {
+    public TotalComponentOrderDetail(WebDriver driver, WebElement component) {
         super(driver, component);
     }
 
@@ -32,17 +32,5 @@ public class TotalComponent extends Component {
             priceCategories.put(priceType, priceValue);
         }
         return priceCategories;
-    }
-
-    public void agreeTermOfService(){
-        WebElement agreeTermOfServiceElement = component.findElement(termOfServiceSel);
-        if(!agreeTermOfServiceElement.isSelected()){
-            agreeTermOfServiceElement.click();
-        }
-    }
-
-    public void selectCheckout(){
-        WebElement btnCheckoutElement = component.findElement(buttonCheckoutSel);
-        btnCheckoutElement.click();
     }
 }

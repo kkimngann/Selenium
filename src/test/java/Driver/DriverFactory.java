@@ -2,6 +2,7 @@ package Driver;
 
 import io.cucumber.java.hu.De;
 import org.apache.commons.exec.OS;
+import org.checkerframework.checker.units.qual.C;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -55,6 +56,7 @@ public class DriverFactory {
             try{
                 browserType = BrowserType.valueOf(browserName);
             }catch (Exception e){
+                e.printStackTrace();
                 throw new IllegalArgumentException(browserName + " do not support");
             }
 
@@ -70,10 +72,15 @@ public class DriverFactory {
                     break;
             }
 
-            String gridHub = System.getProperty("gridHub");
+            ChromeOptions chromeOptions = new ChromeOptions();
+            chromeOptions.addArguments("--incognito");
+            chromeOptions.addArguments("--remote-allow-origins=*");
+            //chromeOptions.addArguments("--headless");
 
+            String gridHub = System.getProperty("gridHub");
             String hub = gridHub +"/wd/hub";
             try{
+                //desiredCapabilities.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
                 driver = new RemoteWebDriver(new URL(hub), desiredCapabilities);
                 driver.manage().window().maximize();
                 driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(15));
