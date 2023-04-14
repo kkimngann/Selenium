@@ -3,7 +3,8 @@ package stepdefinitions;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.qameta.allure.Allure;
-import runner.Order_CucumberRunnerTest;
+import org.openqa.selenium.WebDriver;
+import runner.CucumberRunnerTest;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import io.qameta.allure.Feature;
@@ -12,7 +13,8 @@ import test_flows.computer.OrderComputerFlow;
 import url.Urls;
 
 @Feature("src/test/resources/features/BuyCheapComputer.feature")
-public class BuyCheapComputer extends Order_CucumberRunnerTest implements Urls {
+public class BuyCheapComputer extends BaseSteps implements Urls {
+    WebDriver driver = getDriver();
     OrderComputerFlow orderComputerFlow = new OrderComputerFlow<>(driver, CheapComputerComponent.class);
     Double defaultPrice = 0.0;
     Double additionalProcessorPrice = 0.0;
@@ -24,7 +26,8 @@ public class BuyCheapComputer extends Order_CucumberRunnerTest implements Urls {
     public void gotoURL(){
         Allure.step("User access to the computer detail page");
         String pageUrl = demoBaseUrl + "build-your-cheap-own-computer";
-        getDriver().get(pageUrl);
+        WebDriver driver = getDriver();
+        driver.get(pageUrl);
     }
 
     @When("User select processor {string} and RAM {string} and software {string}")
