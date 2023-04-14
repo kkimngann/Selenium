@@ -29,6 +29,10 @@ pipeline {
         }
     }
 
+    options {
+        cache(name: 'maven-repo', paths: '~/.m2')
+    }
+
     stages {
         stage('Automation Test'){
             steps {
