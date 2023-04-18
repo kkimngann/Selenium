@@ -38,7 +38,6 @@ pipeline {
                 script {
                     container('maven') {
                         sh 'cp -r /data/.m2 ~/.m2 || true'
-                        sh 'ls -al ~/.m2'
                         sh 'mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DgridHub=http://moon.agileops.int/'
                         sh 'cp -r ~/.m2 /data/ || true'
                     }
