@@ -55,7 +55,7 @@ pipeline {
             steps {
                 script {
                     container('maven') {
-                        sh 'mkdir -p ~/.m2 && cp -r /data/ ~/.m2'
+                        sh 'mkdir -p ~/.m2 && cp -rT /data/ ~/.m2'
                         // sh 'mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DgridHub=http://moon.agileops.int/'
                         sh 'cp -r ~/.m2 /data/'
                     }
