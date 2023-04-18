@@ -15,36 +15,37 @@ pipeline {
                   - cat
                   tty: true
                   volumeMounts:
-                  - name: m2
-                    mountPath: /root/.m2
+                  - name: shared-data
+                    mountPath: /data
                 - name: allure
                   image: frankescobar/allure-docker-service:2.19.0
                   command:
                   - cat
                   tty: true
+                  volumeMounts:
+                  - name: shared-data
+                    mountPath: /data
                 volumes:
-                - name: m2
+                - name: shared-data
                   emptyDir: {}
             '''
         }
     }
 
-    options {
-        cache(name: 'maven-repo', paths: '~/.m2')
-    }
-
     stages {
-        stage('Automation Test'){
+        stage('automated test'){
             steps {
                 script {
                     container('maven') {
+                        sh 'cp -r /data/.m2 . || true'
                         sh 'mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DgridHub=http://moon.agileops.int/'
+                        sh 'cp -r .m2 /data'
                     }
                 }
             }
         }
 
-        stage('Allure Report'){
+        stage('publish report'){
             steps {
                 script {
                     container('allure') {
