@@ -41,7 +41,7 @@ pipeline {
                         sh 'mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DgridHub=http://moon.agileops.int/'
                         // sh 'cp -r $WORKSPACE/.m2 /data'
                         sh 'pwd'
-                        sh 'l -la'
+                        sh 'ls -la'
                     }
                 }
             }
