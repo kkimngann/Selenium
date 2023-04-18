@@ -57,9 +57,9 @@ pipeline {
                     container('maven') {
                         sh 'cp -r /data/.m2 ~/.m2 || true'
                         sh 'mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DgridHub=http://moon.agileops.int/'
-                        sh 'cp -r ~/.m2 /data/ || true'
+                        sh 'cp -r ~/.m2 /data/'
                     }
-                    
+
                     container('minio-cli') {
                         sh "mc mirror /data/.m2 minio/selenium/.m2"
                     }
