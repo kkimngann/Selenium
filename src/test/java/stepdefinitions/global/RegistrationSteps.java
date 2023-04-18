@@ -4,13 +4,19 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Feature;
-import runner.Order_CucumberRunnerTest;
+import org.openqa.selenium.WebDriver;
+import org.testng.annotations.Test;
+import runner.CucumberRunnerTest;
+import stepdefinitions.CommonSteps;
 import test_flows.registration.RegistrationFlow;
+import url.Urls;
 
 import java.util.Date;
 
 @Feature("src/test/resources/features/Register.feature")
-public class RegistrationSteps extends Order_CucumberRunnerTest {
+@Test
+public class RegistrationSteps extends CucumberRunnerTest implements Urls {
+    WebDriver driver = getDriver();
     RegistrationFlow registrationFlow = new RegistrationFlow(driver);
     private String emailTest = "";
     @When("User go to register screen")
