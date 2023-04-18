@@ -61,7 +61,7 @@ pipeline {
                     }
 
                     container('minio-cli') {
-                        sh "mc mirror /data/.m2 minio/selenium/.m2"
+                        sh "mc mirror /data/.m2 minio/selenium/.m2 --overwrite"
                     }
                 }
             }
