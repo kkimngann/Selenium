@@ -2,13 +2,13 @@
 
 <suite name="Regression Test With Firefox" verbose="1" parallel="tests" thread-count="10">
     <parameter name="browser" value="firefox"/>
-    <test name="Test Footer" thread-count="10" >
+    <test name="Test Footer Feature" thread-count="10" >
         <parameter name="cucumber.filter.tags" value="@Footer"/>
         <classes>
             <class name="runner.CucumberRunnerTest" />
         </classes>
     </test>
-    <test name="Test Login" thread-count="10" >
+    <test name="Test Login Feature" thread-count="10" >
         <parameter name="cucumber.filter.tags" value="@Login"/>
         <classes>
             <class name="runner.CucumberRunnerTest" />
