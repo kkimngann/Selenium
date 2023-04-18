@@ -25,6 +25,14 @@ pipeline {
                   volumeMounts:
                   - name: shared-data
                     mountPath: /data
+                - name: minio-cli
+                  image: minio/mc
+                  command:
+                  - cat
+                  tty: true
+                  volumeMounts:
+                  - name: shared-data
+                    mountPath: /data
                 volumes:
                 - name: shared-data
                   emptyDir: {}
@@ -33,6 +41,16 @@ pipeline {
     }
 
     stages {
+        stage('restore cache') {
+            steps {
+                script {
+                    container('minio-cli') {
+                        sh "mc alias set minio http://minio.minio.svc.cluster.local:9000 vJlIj3mKR4Df9ZHt 9qZLIDh5A14IciJfEcmwGAk9iVQxHt4L"
+                        sh "mc mirror minio/selenium/.m2 /data || true"
+                    }
+                }
+            }
+        }
         stage('automated test'){
             steps {
                 script {
@@ -40,6 +58,10 @@ pipeline {
                         sh 'cp -r /data/.m2 ~/.m2 || true'
                         sh 'mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DgridHub=http://moon.agileops.int/'
                         sh 'cp -r ~/.m2 /data/ || true'
+                    }
+                    
+                    container('minio-cli') {
+                        sh "mc mirror /data/.m2 minio/selenium/.m2"
                     }
                 }
             }
