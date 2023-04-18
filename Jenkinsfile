@@ -46,7 +46,7 @@ pipeline {
                 script {
                     container('minio-cli') {
                         sh "mc alias set minio http://minio.minio.svc.cluster.local:9000 vJlIj3mKR4Df9ZHt 9qZLIDh5A14IciJfEcmwGAk9iVQxHt4L"
-                        sh "mc mirror minio/selenium /data"
+                        sh "mc mirror minio/selenium/.m2 /data"
                     }
                 }
             }
@@ -55,13 +55,13 @@ pipeline {
             steps {
                 script {
                     container('maven') {
-                        sh 'cp -rT /data ~/'
-                        sh 'mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DgridHub=http://moon.agileops.int/'
-                        sh 'cp -r ~/.m2 /data'
+                        sh 'mkdir -p .m2 && cp -rT /data ~/.m2'
+                        // sh 'mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DgridHub=http://moon.agileops.int/'
+                        sh 'cp -rT ~/.m2 /data'
                     }
 
                     container('minio-cli') {
-                        sh "mc mirror /data minio/selenium --overwrite"
+                        sh "mc mirror /data minio/selenium/.m2 --overwrite"
                     }
                 }
             }
