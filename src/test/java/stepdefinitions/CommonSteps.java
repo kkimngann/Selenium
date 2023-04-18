@@ -5,10 +5,13 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.qameta.allure.Allure;
 import org.openqa.selenium.WebDriver;
+import org.testng.annotations.Test;
+import runner.CucumberRunnerTest;
 import test_flows.global.FooterTestFlow;
 import url.Urls;
 
-public class CommonSteps extends BaseSteps implements Urls {
+@Test
+public class CommonSteps extends CucumberRunnerTest implements Urls {
     @Given("Access the test website")
     public void gotoTestPage(){
         WebDriver driver = getDriver();

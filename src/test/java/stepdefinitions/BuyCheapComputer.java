@@ -4,16 +4,18 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.qameta.allure.Allure;
 import org.openqa.selenium.WebDriver;
-import runner.CucumberRunnerTest;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import io.qameta.allure.Feature;
 import models.components.order.CheapComputerComponent;
+import org.testng.annotations.Test;
+import runner.CucumberRunnerTest;
 import test_flows.computer.OrderComputerFlow;
 import url.Urls;
 
 @Feature("src/test/resources/features/BuyCheapComputer.feature")
-public class BuyCheapComputer extends BaseSteps implements Urls {
+@Test
+public class BuyCheapComputer extends CucumberRunnerTest implements Urls {
     WebDriver driver = getDriver();
     OrderComputerFlow orderComputerFlow = new OrderComputerFlow<>(driver, CheapComputerComponent.class);
     Double defaultPrice = 0.0;

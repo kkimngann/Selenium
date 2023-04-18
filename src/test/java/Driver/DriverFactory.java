@@ -87,4 +87,10 @@ public class DriverFactory {
         }
         return driver;
     }
+
+    public void closeBrowserSession(){
+        if(driver != null){
+            driver.quit();
+        }
+    }
 }
