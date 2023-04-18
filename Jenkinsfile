@@ -55,10 +55,9 @@ pipeline {
             steps {
                 script {
                     container('maven') {
-                        sh 'cp -r /data/ ~/ || true'
-                        sh 'ls -la ~/.m2'
+                        sh 'mkdir -p ~/.m2 && cp -r /data/ ~/.m2'
                         // sh 'mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DgridHub=http://moon.agileops.int/'
-                        // sh 'cp -r ~/.m2 /data/'
+                        sh 'cp -r ~/.m2 /data/'
                     }
 
                     container('minio-cli') {
