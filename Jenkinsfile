@@ -81,6 +81,8 @@ pipeline {
 
     post {
         always {
+            archiveArtifacts artifacts: 'allure-results/**/*', fingerprint: true
+
             publishHTML (target : [allowMissing: false,
             alwaysLinkToLastBuild: true,
             keepAll: true,
@@ -91,18 +93,21 @@ pipeline {
             useWrapperFileDirectly: true])
         }
 
-        failure {
-            slackSend channel: 'selenium-notifications', blocks: blocks, teamDomain: 'agileops', tokenCredentialId: 'jenkins-slack', botUser: true
-        }
+        // script { 
+        //     def blocks = [
+        //         [
+        //             "type": "section",
+        //             "text": [
+        //                 "type": "mrkdwn",
+        //                 "text": "The job *${env.JOB_NAME}:${env.BUILD_NUMBER}* has been failed.\n\nMore info at:\n*Build URL:* ${env.BUILD_URL}/console \nVideo URL: http://moon-videos/${browserName}/${sessionId}"
+        //             ]
+        //         ]
+        //     ]
+        // }
+
+        // failure {
+        //     slackSend channel: 'selenium-notifications', blocks: blocks, teamDomain: 'agileops', tokenCredentialId: 'jenkins-slack', botUser: true
+        // }
     }
 }
 
-def blocks = [
-    [
-        "type": "section",
-        "text": [
-            "type": "mrkdwn",
-            "text": "The job *${env.JOB_NAME}:${env.BUILD_NUMBER}* has been failed.\n\nMore info at:\n*Build URL:* ${env.BUILD_URL}/console \nVideo URL: http://moon-videos/moon/${browserName}/${browserVersion}/${sessionId}"
-        ]
-    ]
-]
