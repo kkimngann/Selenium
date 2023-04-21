@@ -36,21 +36,6 @@ pipeline {
                 volumes:
                 - name: shared-data
                   emptyDir: {}
-            
-            apiVersion: moon.aerokube.com/v1
-            kind: Config
-            metadata:
-                name: default
-                namespace: moon
-            spec:
-                storage:
-                accessKey: "AKIAXXXXXXXXXXXXXXXX" # Set if a pair of credentials is used
-                bucket: "moon-selenium"
-                filename: "moon-selenium-$(date +%Y-%m-%d-%H-%M-%S).tar.gz"
-                endpoint: "https://s3.us-east-2.amazonaws.com"
-                pattern: "$quota/$browserName/$browserVersion/$sessionId"
-                secretKey: "okUa0XXXXXXXXXXXXXXXXXXXX" # Set if a pair of credentials is used
-                # Other fields
 
             '''
         }
