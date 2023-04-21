@@ -90,5 +90,19 @@ pipeline {
             reportTitles: '', 
             useWrapperFileDirectly: true])
         }
+
+        failure {
+            slackSend channel: 'selenium-notifications', blocks: blocks, teamDomain: 'agileops', tokenCredentialId: 'jenkins-slack', botUser: true
+        }
     }
 }
+
+def blocks = [
+    [
+        "type": "section",
+        "text": [
+            "type": "mrkdwn",
+            "text": "The job *${env.JOB_NAME}:${env.BUILD_NUMBER}* has been failed.\n\nMore info at:\n*Build URL:* ${env.BUILD_URL}/console \nVideo URL: http://moon-videos/moon/${browserName}/${browserVersion}/${sessionId}"
+        ]
+    ]
+]
