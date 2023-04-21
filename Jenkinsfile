@@ -33,10 +33,17 @@ pipeline {
                   volumeMounts:
                   - name: shared-data
                     mountPath: /data
+                - name: jq
+                  image: stedolan/jq:latest
+                  command:
+                  - cat
+                  tty: true
+                  volumeMounts:
+                  - name: shared-data
+                    mountPath: /data
                 volumes:
                 - name: shared-data
                   emptyDir: {}
-
             '''
         }
     }
@@ -74,14 +81,42 @@ pipeline {
                     container('allure') {
                         sh 'allure generate --clean -o allure-report'
                     }
+
+                    def "blocks": [
+                        [
+                            "type": "section",
+                            "text": [
+                                "type": "mrkdwn",
+                                "text": "*TEST FAILED*"
+                            ]
+                        ],
+                        [
+                            "type": "divider"
+                        ],
+                        [
+                            "type": "section",
+                            "text": [
+                                "type": "mrkdwn",
+                                "text": "Test in *${env.JOB_NAME}:${env.BUILD_NUMBER}* has been failed.\n\nMore info at:\n*Build URL:* ${env.BUILD_URL}/console\n*Allure Report:* ${env.BUILD_URL}/allure-report/"
+                            ]
+                        ]
+                    ]
+
+                    container('jq') {
+                        sh 'jq -r ".suites[].cases[] | select(.status == \"failed\") | .attachments[].source" allure-resuls/*-result.json > failedTest.txt'
+                    }
+                    if failedTest.txt != null {
+                        slackSend channel: 'selenium-notifications', blocks: blocks, teamDomain: 'agileops', tokenCredentialId: 'jenkins-slack', botUser: true
+                    }
                 }
             }
         }
+
     }
 
     post {
         always {
-            archiveArtifacts artifacts: 'allure-results/**/*', fingerprint: true
+            archiveArtifacts artifacts: 'allure-results/**/*'
 
             publishHTML (target : [allowMissing: false,
             alwaysLinkToLastBuild: true,
@@ -92,22 +127,6 @@ pipeline {
             reportTitles: '', 
             useWrapperFileDirectly: true])
         }
-
-        // script { 
-        //     def blocks = [
-        //         [
-        //             "type": "section",
-        //             "text": [
-        //                 "type": "mrkdwn",
-        //                 "text": "The job *${env.JOB_NAME}:${env.BUILD_NUMBER}* has been failed.\n\nMore info at:\n*Build URL:* ${env.BUILD_URL}/console \nVideo URL: http://moon-videos/${browserName}/${sessionId}"
-        //             ]
-        //         ]
-        //     ]
-        // }
-
-        // failure {
-        //     slackSend channel: 'selenium-notifications', blocks: blocks, teamDomain: 'agileops', tokenCredentialId: 'jenkins-slack', botUser: true
-        // }
     }
 }
 
