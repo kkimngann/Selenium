@@ -104,7 +104,7 @@ pipeline {
 
                     dir('allure-results') {
                         container('jq') {
-                            sh 'jq -s \'.[] | select(.status != "passed") | .uuid\' ?-result.json >> failedTest.txt'
+                            sh 'jq -s \'.[] | select(.status != "passed") | .uuid\' *-result.json >> failedTest.txt'
                         }
                     }
                     if (failedTest.txt != null) {
