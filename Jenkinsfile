@@ -102,12 +102,12 @@ pipeline {
                         ]
                     ]
 
-                    container('jq') {
-                        sh 'jq -r ".suites[].cases[] | select(.status == \"failed\") | .attachments[].source" allure-resuls/*-result.json > failedTest.txt'
-                    }
-                    if failedTest.txt != null {
+                    // container('jq') {
+                    //     sh 'jq -r ".suites[].cases[] | select(.status == \"failed\") | .attachments[].source" allure-resuls/*-result.json > failedTest.txt'
+                    // }
+                    // if failedTest.txt != null {
                         slackSend channel: 'selenium-notifications', blocks: blocks, teamDomain: 'agileops', tokenCredentialId: 'jenkins-slack', botUser: true
-                    }
+                    // }
                 }
             }
         }
