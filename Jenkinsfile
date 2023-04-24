@@ -109,7 +109,7 @@ pipeline {
                     }
                     if (failedTest.txt != null) {
                         // slackSend channel: 'selenium-notifications', blocks: blocks, teamDomain: 'agileops', tokenCredentialId: 'jenkins-slack', botUser: true
-                        sh 'cat failedTest.txt'
+                        sh 'cat allure-results/failedTest.txt'
                     }
                 }
             }
