@@ -81,12 +81,13 @@ pipeline {
                     container('allure') {
                         sh 'allure generate --clean -o allure-report'
                     }
+
                     def blocks = [
                         [
                             "type": "section",
                             "text": [
                                 "type": "mrkdwn",
-                                "text": "*TEST PASSED*"
+                                "text": "*TEST FAILED*"
                             ]
                         ],
                         [
@@ -96,17 +97,17 @@ pipeline {
                             "type": "section",
                             "text": [
                                 "type": "mrkdwn",
-                                "text": "Test in *${env.JOB_NAME}:${env.BUILD_NUMBER}* has been passed.\n\nMore info at:\n*Build URL:* ${env.BUILD_URL}/console\n*Allure Report:* ${env.BUILD_URL}/allure-report/"
+                                "text": "Test in *${env.JOB_NAME}:${env.BUILD_NUMBER}* has been failed.\n\nMore info at:\n*Build URL:* ${env.BUILD_URL}console\n*Allure Report:* ${env.BUILD_URL}allure-report"
                             ]
                         ]
                     ]
 
-                    // container('jq') {
-                    //     sh 'jq -r ".suites[].cases[] | select(.status == \"failed\") | .attachments[].source" allure-resuls/*-result.json > failedTest.txt'
-                    // }
-                    // if failedTest.txt != null {
+                    container('jq') {
+                        sh 'jq -s ".step.status[] | select(.status != \"passed\")" allure-resuls/*-result.json > failedTest.txt'
+                    }
+                    if failedTest.txt != null {
                         slackSend channel: 'selenium-notifications', blocks: blocks, teamDomain: 'agileops', tokenCredentialId: 'jenkins-slack', botUser: true
-                    // }
+                    }
                 }
             }
         }
