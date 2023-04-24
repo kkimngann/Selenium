@@ -103,7 +103,7 @@ pipeline {
                     ]
 
                     container('jq') {
-                        sh 'jq -s ".[] | select(.steps.status[] != \"passed\")" allure-resuls/*-result.json > failedTest.txt'
+                        sh "jq -s '.[] | select(.status != "passed") | .uuid' allure-resuls/*-result.json >> failedTest.txt"
                     }
                     if (failedTest.txt != null) {
                         slackSend channel: 'selenium-notifications', blocks: blocks, teamDomain: 'agileops', tokenCredentialId: 'jenkins-slack', botUser: true
