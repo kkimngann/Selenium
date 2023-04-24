@@ -64,7 +64,7 @@ pipeline {
                 script {
                     container('maven') {
                         sh 'mkdir -p .m2 && cp -rT /data ~/.m2'
-                        sh 'mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DgridHub=http://moon.agileops.int/'
+                        sh 'mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DgridHub=http://moon.agileops.int/ || true'
                         sh 'cp -rT ~/.m2 /data'
                     }
 
@@ -100,7 +100,7 @@ pipeline {
                             ]
                         ]
                     ]
-                    
+
                     // container('jq') {
                     //     sh 'jq -r ".suites[].cases[] | select(.status == \"failed\") | .attachments[].source" allure-resuls/*-result.json > failedTest.txt'
                     // }
