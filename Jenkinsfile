@@ -74,7 +74,6 @@ pipeline {
                     }
 
                     result = sh returnStdout: true, script: 'cat result.txt | sed -n \'/Failed tests/,/Tests run/p\''
-                    echo result
                     // container('minio-cli') {
                     //     sh "mc mirror /data minio/selenium/.m2 --overwrite &> /dev/null"
                     // }
@@ -82,57 +81,52 @@ pipeline {
             }
         }
 
-        // stage('publish report'){
-        //     steps {
-        //         script {
-        //             container('allure') {
-        //                 sh 'allure generate --clean -o allure-report'
-        //             }
+        stage('publish report'){
+            steps {
+                script {
+                    def blocks = [
+                        [
+                            "type": "section",
+                            "text": [
+                                "type": "mrkdwn",
+                                "text": "*TEST FAILED*"
+                            ]
+                        ],
+                        [
+                            "type": "divider"
+                        ],
+                        [
+                            "type": "section",
+                            "text": [
+                                "type": "mrkdwn",
+                                "text": "Job *${env.JOB_NAME}* has been failed.\n*Summary:*\n$result"
+                            ]
+                        ],
+                        [
+                            "type": "divider"
+                        ],
+                        [
+                            "type": "section",
+                            "text": [
+                                "type": "mrkdwn",
+                                "text": "More info at:\n *Build URL:* ${env.BUILD_URL}console\n *Allure Report:* ${env.BUILD_URL}allure-report"
+                            ]
+                        ],
+                    ]
 
-        //             def blocks = [
-        //                 [
-        //                     "type": "section",
-        //                     "text": [
-        //                         "type": "mrkdwn",
-        //                         "text": "*TEST FAILED*"
-        //                     ]
-        //                 ],
-        //                 [
-        //                     "type": "divider"
-        //                 ],
-        //                 [
-        //                     "type": "section",
-        //                     "text": [
-        //                         "type": "mrkdwn",
-        //                         "text": "Job *${env.JOB_NAME}* has been failed.\n*Summary:*\n$result"
-        //                     ]
-        //                 ],
-        //                 [
-        //                     "type": "divider"
-        //                 ],
-        //                 [
-        //                     "type": "section",
-        //                     "text": [
-        //                         "type": "mrkdwn",
-        //                         "text": "More info at:\n *Build URL:* ${env.BUILD_URL}console\n *Allure Report:* ${env.BUILD_URL}allure-report"
-        //                     ]
-        //                 ],
-        //             ]
-
-        //             // dir('allure-results') {
-        //             //     container('jq') { 
-        //             //         sh 'jq -s \'.[] | select(.status != "passed") | .uuid\' *-result.json > failedTest.txt'
-        //             //     }
+                    dir('allure-results') {
+                        container('jq') { 
+                            sh 'jq -s \'.[] | select(.status != "passed") | .uuid\' *-result.json > failedTest.txt'
+                        }
                         
-        //                 // def failedTest = readFile("failedTest.txt").trim().split("\n")
-        //                 // if (failedTest.size() != 0) {
-        //                 //     result = sh (script: 'cat $WORKSPACE/result.txt | sed -n \'/Failed tests/,/Tests run/p\'', returnStdout: true).trim()
-        //                 //     slackSend channel: 'selenium-notifications', blocks: blocks, teamDomain: 'agileops', tokenCredentialId: 'jenkins-slack', botUser: true
-        //                 // }
-        //             // }
-        //         }
-        //     }
-        // }
+                        def failedTest = readFile("failedTest.txt").trim().split("\n")
+                        if (failedTest.size() != 0) {
+                            slackSend channel: 'selenium-notifications', blocks: blocks, teamDomain: 'agileops', tokenCredentialId: 'jenkins-slack', botUser: true
+                        }
+                    }
+                }
+            }
+        }
     }
 
     // post {
