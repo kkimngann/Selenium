@@ -103,7 +103,7 @@ pipeline {
                     ]
 
                     dir('allure-results') {
-                        sh 'touch failedTest.txt'
+                        sh 'sudo touch failedTest.txt'
                         container('jq') {
                             sh 'jq -s \'.[] | select(.status != "passed") | .uuid\' *-result.json > failedTest.txt'
                         }
