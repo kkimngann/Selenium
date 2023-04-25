@@ -101,7 +101,7 @@ pipeline {
                             "type": "section",
                             "text": [
                                 "type": "mrkdwn",
-                                "text": "Job *${env.JOB_NAME}* has been failed.\n*Summary:*\n${result}"
+                                "text": "Job *${env.JOB_NAME}* has been failed.\n*Summary:*\n$result"
                             ]
                         ],
                         [
