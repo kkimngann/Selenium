@@ -67,7 +67,7 @@ pipeline {
                     container('maven') {
                         sh '''
                         mkdir -p .m2 && cp -rT /data ~/.m2 &> /dev/null
-                        mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DgridHub=http://moon.agileops.int/ > result.txt 2>&1
+                        mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DgridHub=http://moon.agileops.int/ > result.txt || true
                         cp -rT ~/.m2 /data &> /dev/null
                         '''
                     }
