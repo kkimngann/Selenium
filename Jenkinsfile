@@ -104,10 +104,12 @@ pipeline {
 
                     dir('allure-results') {
                         container('jq') { 
-                            sh 'cd allure-results && jq -s \'.[] | select(.status != "passed") | .uuid\' *-result.json > failedTest.txt'
+                            sh 'jq -s \'.[] | select(.status != "passed") | .uuid\' *-result.json > failedTest.txt'
+                            sh 'cat failedTest.txt'
                         }
                         
                         def failedTest = readFile("failedTest.txt").trim().split("\n")
+                        sh 'echo $failedTest'
                         if (failedTest.size() != 0) {
                             slackSend channel: 'selenium-notifications', blocks: blocks, teamDomain: 'agileops', tokenCredentialId: 'jenkins-slack', botUser: true
                         }
