@@ -74,7 +74,7 @@ pipeline {
                     }
 
                     result = sh (script: 'cat $WORKSPACE/result.txt | sed -n \'/Failed tests/,/Tests run/p\'', returnStdout: true).trim()
-                    sh 'echo ${result}'
+                    sh "echo ${result}"
                     // container('minio-cli') {
                     //     sh "mc mirror /data minio/selenium/.m2 --overwrite &> /dev/null"
                     // }
