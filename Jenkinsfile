@@ -102,15 +102,10 @@ pipeline {
                         ]
                     ]
 
-                    dir('allure-results') {
-                        container('jq') {
-                            sh 'jq -s \'.[] | select(.status != "passed") | .uuid\' *-result.json > failedTest.txt'
-                        }
+                    container('jq') { sh 'cd allure-results && jq -s \'.[] | select(.status != "passed") | .uuid\' *-result.json > failedTest.txt' }
 
-                        if (failedTest.txt != null) {
-                        // slackSend channel: 'selenium-notifications', blocks: blocks, teamDomain: 'agileops', tokenCredentialId: 'jenkins-slack', botUser: true
-                        sh 'cat failedTest.txt'
-                        }
+                    if (allure-results/failedTest.txt != null) {
+                    slackSend channel: 'selenium-notifications', blocks: blocks, teamDomain: 'agileops', tokenCredentialId: 'jenkins-slack', botUser: true
                     }
                 }
             }
@@ -133,4 +128,3 @@ pipeline {
         }
     }
 }
-
