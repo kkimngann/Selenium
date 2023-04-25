@@ -73,7 +73,7 @@ pipeline {
                         '''
                     }
 
-                    result = sh (script: 'cat result.txt | sed -n \'/Failed tests/,/Tests run/p\'', returnStdout: true).trim()
+                    result = sh (script: 'cat result.txt | sed -n \'/Failed tests/,/Tests run/p\'', returnStdout: true)
                     sh "echo \$result" 
                     // container('minio-cli') {
                     //     sh "mc mirror /data minio/selenium/.m2 --overwrite &> /dev/null"
