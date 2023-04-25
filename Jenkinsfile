@@ -67,7 +67,7 @@ pipeline {
                     container('maven') {
                         sh '''
                         mkdir -p .m2 && cp -rT /data ~/.m2 &> /dev/null
-                        mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DgridHub=http://moon.agileops.int/ > result.txt || true
+                        mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DgridHub=http://moon.agileops.int/ > result.txt 2>&1
                         cp -rT ~/.m2 /data &> /dev/null
                         '''
                     }
@@ -111,7 +111,7 @@ pipeline {
                             "type": "section",
                             "text": [
                                 "type": "mrkdwn",
-                                "text": "More info at:\n &rtrif; *Build URL:* ${env.BUILD_URL}console\n &rtrif; *Allure Report:* ${env.BUILD_URL}allure-report"
+                                "text": "More info at:\n *Build URL:* ${env.BUILD_URL}console\n *Allure Report:* ${env.BUILD_URL}allure-report"
                             ]
                         ],
                     ]
@@ -123,7 +123,7 @@ pipeline {
                         
                         def failedTest = readFile("failedTest.txt").trim().split("\n")
                         if (failedTest.size() != 0) {
-                            result = sh (script: 'cat result.txt | sed -n \'/Failed tests/,/Tests run/p\'', returnStdout: true).trim()
+                            result = sh (script: 'cat $WORKSPACE/result.txt | sed -n \'/Failed tests/,/Tests run/p\'', returnStdout: true).trim()
                             slackSend channel: 'selenium-notifications', blocks: blocks, teamDomain: 'agileops', tokenCredentialId: 'jenkins-slack', botUser: true
                         }
                     }
