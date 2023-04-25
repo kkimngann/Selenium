@@ -54,7 +54,7 @@ pipeline {
                 script {
                     container('minio-cli') {
                         sh "mc alias set minio http://minio.minio.svc.cluster.local:9000 vJlIj3mKR4Df9ZHt 9qZLIDh5A14IciJfEcmwGAk9iVQxHt4L"
-                        sh "mc mirror minio/selenium/.m2 /data"
+                        sh "mc mirror minio/selenium/.m2 /data &> /dev/null"
                     }
                 }
             }
@@ -63,13 +63,13 @@ pipeline {
             steps {
                 script {
                     container('maven') {
-                        sh 'mkdir -p .m2 && cp -rT /data ~/.m2'
+                        sh 'mkdir -p .m2 && cp -rT /data ~/.m2 &> /dev/null'
                         sh 'mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DgridHub=http://moon.agileops.int/ || true'
-                        sh 'cp -rT ~/.m2 /data'
+                        sh 'cp -rT ~/.m2 /data &> /dev/null'
                     }
 
                     container('minio-cli') {
-                        sh "mc mirror /data minio/selenium/.m2 --overwrite"
+                        sh "mc mirror /data minio/selenium/.m2 --overwrite &> /dev/null"
                     }
                 }
             }
@@ -97,7 +97,7 @@ pipeline {
                             "type": "section",
                             "text": [
                                 "type": "mrkdwn",
-                                "text": "Test in *${env.JOB_NAME}:${env.BUILD_NUMBER}* has been failed.\n\nMore info at:\n*Build URL:* ${env.BUILD_URL}console\n*Allure Report:* ${env.BUILD_URL}allure-report"
+                                "text": "Job *${env.JOB_NAME}* has been failed.\n\nMore info at:\n*Build URL:* ${env.BUILD_URL}console\n*Allure Report:* ${env.BUILD_URL}allure-report"
                             ]
                         ]
                     ]
