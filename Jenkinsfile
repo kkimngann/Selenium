@@ -61,6 +61,7 @@ pipeline {
                 }
             }
         }
+        
         stage('automated test'){
             steps {
                 script {
@@ -72,6 +73,7 @@ pipeline {
                         '''
                     }
 
+                    sh 'cat $WORKSPACE/result.txt | sed -n \'/Failed tests/,/Tests run/p\''
                     container('minio-cli') {
                         sh "mc mirror /data minio/selenium/.m2 --overwrite &> /dev/null"
                     }
@@ -116,17 +118,17 @@ pipeline {
                         ],
                     ]
 
-                    dir('allure-results') {
-                        container('jq') { 
-                            sh 'jq -s \'.[] | select(.status != "passed") | .uuid\' *-result.json > failedTest.txt'
-                        }
+                    // dir('allure-results') {
+                    //     container('jq') { 
+                    //         sh 'jq -s \'.[] | select(.status != "passed") | .uuid\' *-result.json > failedTest.txt'
+                    //     }
                         
-                        def failedTest = readFile("failedTest.txt").trim().split("\n")
-                        if (failedTest.size() != 0) {
-                            result = sh (script: 'cat $WORKSPACE/result.txt | sed -n \'/Failed tests/,/Tests run/p\'', returnStdout: true).trim()
-                            slackSend channel: 'selenium-notifications', blocks: blocks, teamDomain: 'agileops', tokenCredentialId: 'jenkins-slack', botUser: true
-                        }
-                    }
+                        // def failedTest = readFile("failedTest.txt").trim().split("\n")
+                        // if (failedTest.size() != 0) {
+                        //     result = sh (script: 'cat $WORKSPACE/result.txt | sed -n \'/Failed tests/,/Tests run/p\'', returnStdout: true).trim()
+                        //     slackSend channel: 'selenium-notifications', blocks: blocks, teamDomain: 'agileops', tokenCredentialId: 'jenkins-slack', botUser: true
+                        // }
+                    // }
                 }
             }
         }
