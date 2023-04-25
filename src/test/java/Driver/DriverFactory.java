@@ -1,22 +1,17 @@
 package Driver;
 
-import io.cucumber.java.hu.De;
+
 import org.apache.commons.exec.OS;
-import org.checkerframework.checker.units.qual.C;
-import org.openqa.selenium.Capabilities;
+
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.safari.SafariDriver;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
-import java.util.Properties;
-
 public class DriverFactory {
     private WebDriver driver;
     public static WebDriver getChromeDriver(){
@@ -72,6 +67,7 @@ public class DriverFactory {
                     desiredCapabilities.setBrowserName(BrowserType.safari.getName());
                     break;
             }
+
 
             String gridHub = System.getProperty("gridHub");
             String hub = gridHub +"/wd/hub";
