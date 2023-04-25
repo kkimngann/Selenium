@@ -9,7 +9,7 @@ Feature: Authorization
     Then Error message show correctly
   """
   Login was unsuccessful. Please correct the errors and try again.
-  No customer account found
+  No customer account foun
   """
 
 
