@@ -33,6 +33,14 @@ pipeline {
                   volumeMounts:
                   - name: shared-data
                     mountPath: /data
+                - name: jq
+                  image: stedolan/jq:latest
+                  command:
+                  - cat
+                  tty: true
+                  volumeMounts:
+                  - name: shared-data
+                    mountPath: /data
                 volumes:
                 - name: shared-data
                   emptyDir: {}
@@ -56,7 +64,7 @@ pipeline {
                 script {
                     container('maven') {
                         sh 'mkdir -p .m2 && cp -rT /data ~/.m2'
-                        sh 'mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DgridHub=http://moon.agileops.int/'
+                        sh 'mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DgridHub=http://moon.agileops.int/ || true'
                         sh 'cp -rT ~/.m2 /data'
                     }
 
@@ -73,13 +81,46 @@ pipeline {
                     container('allure') {
                         sh 'allure generate --clean -o allure-report'
                     }
+
+                    def blocks = [
+                        [
+                            "type": "section",
+                            "text": [
+                                "type": "mrkdwn",
+                                "text": "*TEST FAILED*"
+                            ]
+                        ],
+                        [
+                            "type": "divider"
+                        ],
+                        [
+                            "type": "section",
+                            "text": [
+                                "type": "mrkdwn",
+                                "text": "Test in *${env.JOB_NAME}:${env.BUILD_NUMBER}* has been failed.\n\nMore info at:\n*Build URL:* ${env.BUILD_URL}console\n*Allure Report:* ${env.BUILD_URL}allure-report"
+                            ]
+                        ]
+                    ]
+
+                    dir('allure-results') {
+                        container('jq') {
+                            sh 'jq -s \'.[] | select(.status != "passed") | .uuid\' *-result.json >> failedTest.txt'
+                        }
+                    }
+                    if (failedTest.txt != null) {
+                        // slackSend channel: 'selenium-notifications', blocks: blocks, teamDomain: 'agileops', tokenCredentialId: 'jenkins-slack', botUser: true
+                        sh 'cat allure-results/failedTest.txt'
+                    }
                 }
             }
         }
+
     }
 
     post {
         always {
+            archiveArtifacts artifacts: 'allure-results/**/*'
+
             publishHTML (target : [allowMissing: false,
             alwaysLinkToLastBuild: true,
             keepAll: true,
@@ -91,3 +132,4 @@ pipeline {
         }
     }
 }
+
