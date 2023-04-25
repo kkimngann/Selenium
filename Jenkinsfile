@@ -1,3 +1,5 @@
+def result = ''
+
 pipeline {
     agent {
         kubernetes {
@@ -63,9 +65,11 @@ pipeline {
             steps {
                 script {
                     container('maven') {
-                        sh 'mkdir -p .m2 && cp -rT /data ~/.m2 &> /dev/null'
-                        sh 'mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DgridHub=http://moon.agileops.int/ || true'
-                        sh 'cp -rT ~/.m2 /data &> /dev/null'
+                        sh '''
+                        mkdir -p .m2 && cp -rT /data ~/.m2 &> /dev/null
+                        mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DgridHub=http://moon.agileops.int/ > result.txt || true
+                        cp -rT ~/.m2 /data &> /dev/null
+                        '''
                     }
 
                     container('minio-cli') {
@@ -97,9 +101,19 @@ pipeline {
                             "type": "section",
                             "text": [
                                 "type": "mrkdwn",
-                                "text": "Job *${env.JOB_NAME}* has been failed.\n\nMore info at:\n*Build URL:* ${env.BUILD_URL}console\n*Allure Report:* ${env.BUILD_URL}allure-report"
+                                "text": "Job *${env.JOB_NAME}* has been failed.\n$result"
                             ]
-                        ]
+                        ],
+                        [
+                            "type": "divider"
+                        ],
+                        [
+                            "type": "section",
+                            "text": [
+                                "type": "mrkdwn",
+                                "text": "More info at:\n&rtrif; *Build URL:* ${env.BUILD_URL}console\n&rtrif; *Allure Report:* ${env.BUILD_URL}allure-report"
+                            ]
+                        ],
                     ]
 
                     dir('allure-results') {
@@ -109,8 +123,8 @@ pipeline {
                         }
                         
                         def failedTest = readFile("failedTest.txt").trim().split("\n")
-                        sh 'echo $failedTest'
                         if (failedTest.size() != 0) {
+                            result = $(grep -A12 "Failed tests" result.txt)
                             slackSend channel: 'selenium-notifications', blocks: blocks, teamDomain: 'agileops', tokenCredentialId: 'jenkins-slack', botUser: true
                         }
                     }
