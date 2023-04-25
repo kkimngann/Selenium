@@ -101,7 +101,7 @@ pipeline {
                             "type": "section",
                             "text": [
                                 "type": "mrkdwn",
-                                "text": "Job *${env.JOB_NAME}* has been failed.\n$result"
+                                "text": "Job *${env.JOB_NAME}* has been failed.\n${result}"
                             ]
                         ],
                         [
@@ -124,7 +124,7 @@ pipeline {
                         
                         def failedTest = readFile("failedTest.txt").trim().split("\n")
                         if (failedTest.size() != 0) {
-                            result = $(sh 'grep -A12 "Failed tests" result.txt')
+                            sh "${result} = $(cat test.txt | sed -n '/Failed tests/,/Tests run/p')"
                             slackSend channel: 'selenium-notifications', blocks: blocks, teamDomain: 'agileops', tokenCredentialId: 'jenkins-slack', botUser: true
                         }
                     }
