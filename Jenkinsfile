@@ -111,7 +111,7 @@ pipeline {
                             "type": "section",
                             "text": [
                                 "type": "mrkdwn",
-                                "text": "More info at:\n&rtrif; *Build URL:* ${env.BUILD_URL}console\n&rtrif; *Allure Report:* ${env.BUILD_URL}allure-report"
+                                "text": "More info at:\n &rtrif; *Build URL:* ${env.BUILD_URL}console\n &rtrif; *Allure Report:* ${env.BUILD_URL}allure-report"
                             ]
                         ],
                     ]
@@ -119,12 +119,11 @@ pipeline {
                     dir('allure-results') {
                         container('jq') { 
                             sh 'jq -s \'.[] | select(.status != "passed") | .uuid\' *-result.json > failedTest.txt'
-                            sh 'cat failedTest.txt'
                         }
                         
                         def failedTest = readFile("failedTest.txt").trim().split("\n")
                         if (failedTest.size() != 0) {
-                            result = sh (script: 'cat test.txt | sed -n \'/Failed tests/,/Tests run/p\'', returnStdout: true).trim()
+                            result = sh (script: 'cat result.txt | sed -n \'/Failed tests/,/Tests run/p\'', returnStdout: true).trim()
                             slackSend channel: 'selenium-notifications', blocks: blocks, teamDomain: 'agileops', tokenCredentialId: 'jenkins-slack', botUser: true
                         }
                     }
