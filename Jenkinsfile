@@ -103,14 +103,15 @@ pipeline {
                     ]
 
                     dir('allure-results') {
+                        sh 'touch failedTest.txt'
                         container('jq') {
-                            sh 'touch failedTest.txt'
                             sh 'jq -s \'.[] | select(.status != "passed") | .uuid\' *-result.json > failedTest.txt'
                         }
-                    }
-                    if (failedTest.txt != null) {
+
+                        if (failedTest.txt != null) {
                         // slackSend channel: 'selenium-notifications', blocks: blocks, teamDomain: 'agileops', tokenCredentialId: 'jenkins-slack', botUser: true
-                        sh 'cat allure-results/failedTest.txt'
+                        sh 'cat failedTest.txt'
+                        }
                     }
                 }
             }
