@@ -1,0 +1,231 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------------------< groupId:Selenium >--------------------------
+[INFO] Building Selenium 1.0-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:2.5:clean (default-clean) @ Selenium ---
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ Selenium ---
+[WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory /home/jenkins/agent/workspace/selenium/src/main/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.9.0:compile (default-compile) @ Selenium ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ Selenium ---
+[WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] Copying 8 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.9.0:testCompile (default-testCompile) @ Selenium ---
+[INFO] Changes detected - recompiling the module!
+[WARNING] File encoding has not been set, using platform encoding UTF-8, i.e. build is platform dependent!
+[INFO] Compiling 69 source files to /home/jenkins/agent/workspace/selenium/target/test-classes
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.19.1:test (default-test) @ Selenium ---
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running TestSuite
+log4j:WARN No appenders could be found for logger (org.testng.TestNG).
+log4j:WARN Please initialize the log4j system properly.
+
+@tag @Test @Login @Authorize @Invalid
+Scenario: Verify that user can not login with invalid account                                  # src/test/resources/features/Login.feature:6
+
+@tag @Test @Registration @Invalid
+Scenario Outline: Verify that user can not register with invalid data "Female", "", "Ngan", "kkimngann.jk@gmail.com", "12345678", "12345678" # src/test/resources/features/Register.feature:15
+Apr 25, 2023 5:00:58 AM org.openqa.selenium.remote.tracing.opentelemetry.OpenTelemetryTracer createTracer
+INFO: Using OpenTelemetry for tracing
+  Given Access the test website                                                                                                              # stepdefinitions.CommonSteps.gotoTestPage()
+  When User go to register screen                                                                                                            # stepdefinitions.global.RegistrationSteps.goToScreenRegistration()
+  And User input data "Female", "", "Ngan", "kkimngann.jk@gmail.com", "12345678", "12345678"                                                 # stepdefinitions.global.RegistrationSteps.inputData(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)
+  And User select register                                                                                                                   # stepdefinitions.global.RegistrationSteps.selectRegister()
+  Then Error message "FirstName" invalid show correctly "First name is required."                                                            # stepdefinitions.global.RegistrationSteps.verifyMessage(java.lang.String,java.lang.String)
+
+@tag @Test @Registration @Invalid
+Scenario Outline: Verify that user can not register with invalid data "Male", "Ngan", "", "kkimngann.jk@gmail.com", "12345678", "12345678" # src/test/resources/features/Register.feature:16
+  Given Access the test website                                                                # stepdefinitions.CommonSteps.gotoTestPage()
+  Given Access the test website                                                                                                            # stepdefinitions.CommonSteps.gotoTestPage()
+  When User go to register screen                                                                                                          # stepdefinitions.global.RegistrationSteps.goToScreenRegistration()
+  When User go to login screen                                                                 # stepdefinitions.global.LoginSteps.goToScreenRegistration()
+  And User input data "Male", "Ngan", "", "kkimngann.jk@gmail.com", "12345678", "12345678"                                                 # stepdefinitions.global.RegistrationSteps.inputData(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)
+  And User input email "ngan.nguyen.thi.kim.2005@gmail.com" and password "12345678" and submit # stepdefinitions.global.LoginSteps.userInputEmailAndPasswordAndSubmit(java.lang.String,java.lang.String)
+  And User select register                                                                                                                 # stepdefinitions.global.RegistrationSteps.selectRegister()
+Actual is Login was unsuccessful. Please correct the errors and try again.
+No customer account found
+Expected is Login was unsuccessful. Please correct the errors and try again.
+No customer account foun
+  Then Error message show correctly                                                            # stepdefinitions.global.LoginSteps.errorMessageShowCorrectly(java.lang.String)
+      java.lang.AssertionError: Actual result is diff with expected result
+	at support.verfication.Verifier.verifyEqual(Verifier.java:7)
+	at test_flows.global.LoginTestFlow.checkErrorMessage(LoginTestFlow.java:29)
+	at stepdefinitions.global.LoginSteps.errorMessageShowCorrectly(LoginSteps.java:37)
+	at ✽.Error message show correctly(file:///home/jenkins/agent/workspace/selenium/src/test/resources/features/Login.feature:9)
+
+  Then Error message "LastName" invalid show correctly "Last name is required."                                                            # stepdefinitions.global.RegistrationSteps.verifyMessage(java.lang.String,java.lang.String)
+
+@tag @Test @Registration @Valid
+Scenario Outline: Verify that user can register with valid data                  # src/test/resources/features/Register.feature:27
+
+@tag @Test @Login @Authorize @Valid
+Scenario: Verify that user can login with valid account                              # src/test/resources/features/Login.feature:17
+  Given Access the test website                                                  # stepdefinitions.CommonSteps.gotoTestPage()
+  Given Access the test website                                                      # stepdefinitions.CommonSteps.gotoTestPage()
+  When User go to register screen                                                # stepdefinitions.global.RegistrationSteps.goToScreenRegistration()
+  And User input data "Female", "Nguyen", "Ngan", "auto", "12345678", "12345678" # stepdefinitions.global.RegistrationSteps.inputData(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)
+  When User go to login screen                                                       # stepdefinitions.global.LoginSteps.goToScreenRegistration()
+  And User select register                                                       # stepdefinitions.global.RegistrationSteps.selectRegister()
+  Then Show correct user email "auto" after registration                         # stepdefinitions.global.RegistrationSteps.showCorrectUserEmail(java.lang.String)
+  And Show button log out correctly                                              # stepdefinitions.global.LoginSteps.showButtonLogOutCorrectly()
+┌───────────────────────────────────────────────────────────────────────────────────┐
+│ Share your Cucumber Report with your team at https://reports.cucumber.io          │
+│ Activate publishing with one of the following:                                    │
+│                                                                                   │
+│ src/test/resources/cucumber.properties:          cucumber.publish.enabled=true    │
+│ src/test/resources/junit-platform.properties:    cucumber.publish.enabled=true    │
+│ Environment variable:                            CUCUMBER_PUBLISH_ENABLED=true    │
+│ JUnit:                                           @CucumberOptions(publish = true) │
+│                                                                                   │
+│ More information at https://cucumber.io/docs/cucumber/environment-variables/      │
+│                                                                                   │
+│ Disable this message with one of the following:                                   │
+│                                                                                   │
+│ src/test/resources/cucumber.properties:          cucumber.publish.quiet=true      │
+│ src/test/resources/junit-platform.properties:    cucumber.publish.quiet=true      │
+└───────────────────────────────────────────────────────────────────────────────────┘
+  And User input email "kkimngann.jk+1@gmail.com" and password "12345678" and submit # stepdefinitions.global.LoginSteps.userInputEmailAndPasswordAndSubmit(java.lang.String,java.lang.String)
+  Then Show correct user email "kkimngann.jk+1@gmail.com" after login                # stepdefinitions.global.LoginSteps.showCorrectUserEmail(java.lang.String)
+  And Show button log out correctly                                                  # stepdefinitions.global.LoginSteps.showButtonLogOutCorrectly()
+┌───────────────────────────────────────────────────────────────────────────────────┐
+│ Share your Cucumber Report with your team at https://reports.cucumber.io          │
+│ Activate publishing with one of the following:                                    │
+│                                                                                   │
+│ src/test/resources/cucumber.properties:          cucumber.publish.enabled=true    │
+│ src/test/resources/junit-platform.properties:    cucumber.publish.enabled=true    │
+│ Environment variable:                            CUCUMBER_PUBLISH_ENABLED=true    │
+│ JUnit:                                           @CucumberOptions(publish = true) │
+│                                                                                   │
+│ More information at https://cucumber.io/docs/cucumber/environment-variables/      │
+│                                                                                   │
+│ Disable this message with one of the following:                                   │
+│                                                                                   │
+│ src/test/resources/cucumber.properties:          cucumber.publish.quiet=true      │
+│ src/test/resources/junit-platform.properties:    cucumber.publish.quiet=true      │
+└───────────────────────────────────────────────────────────────────────────────────┘
+
+@tag @Test @Login @Authorize @Invalid
+Scenario: Verify that user can not login with invalid account                                  # src/test/resources/features/Login.feature:6
+
+@tag @Test @Footer
+Scenario: Verify that footer show in screen correctly # src/test/resources/features/FooterTest.feature:6
+  Given Access the test website                       # stepdefinitions.CommonSteps.gotoTestPage()
+  Given Access the test website                                                                # stepdefinitions.CommonSteps.gotoTestPage()
+  When User go to login screen                                                                 # stepdefinitions.global.LoginSteps.goToScreenRegistration()
+  And User input email "ngan.nguyen.thi.kim.2005@gmail.com" and password "12345678" and submit # stepdefinitions.global.LoginSteps.userInputEmailAndPasswordAndSubmit(java.lang.String,java.lang.String)
+Actual is Login was unsuccessful. Please correct the errors and try again.
+No customer account found
+Expected is Login was unsuccessful. Please correct the errors and try again.
+No customer account foun
+  Then Error message show correctly                                                            # stepdefinitions.global.LoginSteps.errorMessageShowCorrectly(java.lang.String)
+      java.lang.AssertionError: Actual result is diff with expected result
+	at support.verfication.Verifier.verifyEqual(Verifier.java:7)
+	at test_flows.global.LoginTestFlow.checkErrorMessage(LoginTestFlow.java:29)
+	at stepdefinitions.global.LoginSteps.errorMessageShowCorrectly(LoginSteps.java:37)
+	at ✽.Error message show correctly(file:///home/jenkins/agent/workspace/selenium/src/test/resources/features/Login.feature:9)
+
+
+@tag @Test @Login @Authorize @Valid
+Scenario: Verify that user can login with valid account                              # src/test/resources/features/Login.feature:17
+  Given Access the test website                                                      # stepdefinitions.CommonSteps.gotoTestPage()
+  When User go to login screen                                                       # stepdefinitions.global.LoginSteps.goToScreenRegistration()
+  And User input email "kkimngann.jk+1@gmail.com" and password "12345678" and submit # stepdefinitions.global.LoginSteps.userInputEmailAndPasswordAndSubmit(java.lang.String,java.lang.String)
+  Then Show correct user email "kkimngann.jk+1@gmail.com" after login                # stepdefinitions.global.LoginSteps.showCorrectUserEmail(java.lang.String)
+  And Show button log out correctly                                                  # stepdefinitions.global.LoginSteps.showButtonLogOutCorrectly()
+┌───────────────────────────────────────────────────────────────────────────────────┐
+│ Share your Cucumber Report with your team at https://reports.cucumber.io          │
+│ Activate publishing with one of the following:                                    │
+│                                                                                   │
+│ src/test/resources/cucumber.properties:          cucumber.publish.enabled=true    │
+│ src/test/resources/junit-platform.properties:    cucumber.publish.enabled=true    │
+│ Environment variable:                            CUCUMBER_PUBLISH_ENABLED=true    │
+│ JUnit:                                           @CucumberOptions(publish = true) │
+│                                                                                   │
+│ More information at https://cucumber.io/docs/cucumber/environment-variables/      │
+│                                                                                   │
+│ Disable this message with one of the following:                                   │
+│                                                                                   │
+│ src/test/resources/cucumber.properties:          cucumber.publish.quiet=true      │
+│ src/test/resources/junit-platform.properties:    cucumber.publish.quiet=true      │
+└───────────────────────────────────────────────────────────────────────────────────┘
+  When User go to menu "BOOKS"                        # stepdefinitions.CommonSteps.userGoToMenu(java.lang.String)
+  Then Verify that footer shown correctly             # stepdefinitions.CommonSteps.verifyThatFooterShownCorrectly()
+  When User go to menu "COMPUTERS"                    # stepdefinitions.CommonSteps.userGoToMenu(java.lang.String)
+  Then Verify that footer shown correctly             # stepdefinitions.CommonSteps.verifyThatFooterShownCorrectly()
+  When User go to menu "ELECTRONICS"                  # stepdefinitions.CommonSteps.userGoToMenu(java.lang.String)
+  Then Verify that footer shown correctly             # stepdefinitions.CommonSteps.verifyThatFooterShownCorrectly()
+  When User go to menu "APPAREL & SHOES"              # stepdefinitions.CommonSteps.userGoToMenu(java.lang.String)
+  Then Verify that footer shown correctly             # stepdefinitions.CommonSteps.verifyThatFooterShownCorrectly()
+  When User go to menu "DIGITAL DOWNLOADS"            # stepdefinitions.CommonSteps.userGoToMenu(java.lang.String)
+  Then Verify that footer shown correctly             # stepdefinitions.CommonSteps.verifyThatFooterShownCorrectly()
+  When User go to menu "JEWELRY"                      # stepdefinitions.CommonSteps.userGoToMenu(java.lang.String)
+  Then Verify that footer shown correctly             # stepdefinitions.CommonSteps.verifyThatFooterShownCorrectly()
+  When User go to menu "GIFT CARDS"                   # stepdefinitions.CommonSteps.userGoToMenu(java.lang.String)
+  Then Verify that footer shown correctly             # stepdefinitions.CommonSteps.verifyThatFooterShownCorrectly()
+┌───────────────────────────────────────────────────────────────────────────────────┐
+│ Share your Cucumber Report with your team at https://reports.cucumber.io          │
+│ Activate publishing with one of the following:                                    │
+│                                                                                   │
+│ src/test/resources/cucumber.properties:          cucumber.publish.enabled=true    │
+│ src/test/resources/junit-platform.properties:    cucumber.publish.enabled=true    │
+│ Environment variable:                            CUCUMBER_PUBLISH_ENABLED=true    │
+│ JUnit:                                           @CucumberOptions(publish = true) │
+│                                                                                   │
+│ More information at https://cucumber.io/docs/cucumber/environment-variables/      │
+│                                                                                   │
+│ Disable this message with one of the following:                                   │
+│                                                                                   │
+│ src/test/resources/cucumber.properties:          cucumber.publish.quiet=true      │
+│ src/test/resources/junit-platform.properties:    cucumber.publish.quiet=true      │
+└───────────────────────────────────────────────────────────────────────────────────┘
+Tests run: 8, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 118.972 sec <<< FAILURE! - in TestSuite
+runScenario(runner.CucumberRunnerTest)  Time elapsed: 2.243 sec  <<< FAILURE!
+java.lang.AssertionError: Actual result is diff with expected result
+
+runScenario(runner.CucumberRunnerTest)  Time elapsed: 17.568 sec  <<< FAILURE!
+java.lang.AssertionError: Actual result is diff with expected result
+
+
+Results :
+
+Failed tests: 
+runner.CucumberRunnerTest.runScenario(runner.CucumberRunnerTest)
+  Run 1: PASS
+  Run 2: CucumberRunnerTest.runScenario Actual result is diff with expected result
+  Run 3: PASS
+  Run 4: PASS
+  Run 5: PASS
+  Run 6: CucumberRunnerTest.runScenario Actual result is diff with expected result
+  Run 7: PASS
+  Run 8: PASS
+
+
+Tests run: 1, Failures: 1, Errors: 0, Skipped: 0
+
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  02:02 min
+[INFO] Finished at: 2023-04-25T05:02:56Z
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:2.19.1:test (default-test) on project Selenium: There are test failures.
+[ERROR] 
+[ERROR] Please refer to /home/jenkins/agent/workspace/selenium/target/surefire-reports for the individual test results.
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
