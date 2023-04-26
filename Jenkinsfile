@@ -74,9 +74,9 @@ pipeline {
                     }
 
                     result = sh returnStdout: true, script: 'cat result.txt | sed -n \'/Failed tests/,/Tests run/p\''
-                    // container('minio-cli') {
-                    //     sh "mc mirror /data minio/selenium/.m2 --overwrite &> /dev/null"
-                    // }
+                    container('minio-cli') {
+                        sh "mc mirror /data minio/selenium/.m2 --overwrite &> /dev/null"
+                    }
                 }
             }
         }
@@ -99,7 +99,7 @@ pipeline {
                             "type": "section",
                             "text": [
                                 "type": "mrkdwn",
-                                "text": "Job *${env.JOB_NAME}* has been failed.\n*Summary:*\n${result}"
+                                "text": ":noti: Job *${env.JOB_NAME}* has been failed.\n*Summary:*\n${result}"
                             ]
                         ],
                         [
@@ -129,18 +129,18 @@ pipeline {
         }
     }
 
-    // post {
-    //     always {
-    //         archiveArtifacts artifacts: 'allure-results/**/*'
+    post {
+        always {
+            archiveArtifacts artifacts: 'allure-results/**/*'
 
-    //         publishHTML (target : [allowMissing: false,
-    //         alwaysLinkToLastBuild: true,
-    //         keepAll: true,
-    //         reportDir: 'allure-report',
-    //         reportFiles: 'index.html',
-    //         reportName: 'allure-report',
-    //         reportTitles: '', 
-    //         useWrapperFileDirectly: true])
-    //     }
-    // }
+            publishHTML (target : [allowMissing: false,
+            alwaysLinkToLastBuild: true,
+            keepAll: true,
+            reportDir: 'allure-report',
+            reportFiles: 'index.html',
+            reportName: 'allure-report',
+            reportTitles: '', 
+            useWrapperFileDirectly: true])
+        }
+    }
 }
