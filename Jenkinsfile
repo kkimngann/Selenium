@@ -1,3 +1,5 @@
+def result = ''
+
 pipeline {
     agent {
         kubernetes {
@@ -33,6 +35,14 @@ pipeline {
                   volumeMounts:
                   - name: shared-data
                     mountPath: /data
+                - name: jq
+                  image: stedolan/jq:latest
+                  command:
+                  - cat
+                  tty: true
+                  volumeMounts:
+                  - name: shared-data
+                    mountPath: /data
                 volumes:
                 - name: shared-data
                   emptyDir: {}
@@ -46,23 +56,27 @@ pipeline {
                 script {
                     container('minio-cli') {
                         sh "mc alias set minio http://minio.minio.svc.cluster.local:9000 vJlIj3mKR4Df9ZHt 9qZLIDh5A14IciJfEcmwGAk9iVQxHt4L"
-                        sh "mc mirror minio/selenium/.m2 /data"
+                        sh "mc mirror minio/selenium/.m2 /data &> /dev/null"
                     }
                 }
             }
         }
+
         stage('automated test'){
             steps {
                 script {
                     container('maven') {
-                        sh 'mkdir -p .m2 && cp -rT /data ~/.m2'
-                        sh 'mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DgridHub=http://moon.agileops.int/'
-                        sh 'cp -rT ~/.m2 /data'
+                        sh '''
+                        mkdir -p .m2 && cp -rT /data ~/.m2 &> /dev/null
+                        mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DgridHub=http://moon.agileops.int/ > result.txt || true
+                        cp -rT ~/.m2 /data &> /dev/null
+                        '''
                     }
 
-                    container('minio-cli') {
-                        sh "mc mirror /data minio/selenium/.m2 --overwrite"
-                    }
+                    result = sh returnStdout: true, script: 'cat result.txt | sed -n \'/Failed tests/,/Tests run/p\''
+                    // container('minio-cli') {
+                    //     sh "mc mirror /data minio/selenium/.m2 --overwrite &> /dev/null"
+                    // }
                 }
             }
         }
@@ -70,24 +84,63 @@ pipeline {
         stage('publish report'){
             steps {
                 script {
-                    container('allure') {
-                        sh 'allure generate --clean -o allure-report'
+                    def blocks = [
+                        [
+                            "type": "section",
+                            "text": [
+                                "type": "mrkdwn",
+                                "text": "*TEST FAILED*"
+                            ]
+                        ],
+                        [
+                            "type": "divider"
+                        ],
+                        [
+                            "type": "section",
+                            "text": [
+                                "type": "mrkdwn",
+                                "text": "Job *${env.JOB_NAME}* has been failed.\n*Summary:*\n${result}"
+                            ]
+                        ],
+                        [
+                            "type": "divider"
+                        ],
+                        [
+                            "type": "section",
+                            "text": [
+                                "type": "mrkdwn",
+                                "text": "More info at:\n *Build URL:* ${env.BUILD_URL}console\n *Allure Report:* ${env.BUILD_URL}allure-report"
+                            ]
+                        ],
+                    ]
+
+                    dir('allure-results') {
+                        container('jq') { 
+                            sh 'jq -s \'.[] | select(.status != "passed") | .uuid\' *-result.json > failedTest.txt'
+                        }
+                        
+                        def failedTest = readFile("failedTest.txt").trim().split("\n")
+                        if (failedTest.size() != 0) {
+                            slackSend channel: 'selenium-notifications', blocks: blocks, teamDomain: 'agileops', tokenCredentialId: 'jenkins-slack', botUser: true
+                        }
                     }
                 }
             }
         }
     }
 
-    post {
-        always {
-            publishHTML (target : [allowMissing: false,
-            alwaysLinkToLastBuild: true,
-            keepAll: true,
-            reportDir: 'allure-report',
-            reportFiles: 'index.html',
-            reportName: 'allure-report',
-            reportTitles: '', 
-            useWrapperFileDirectly: true])
-        }
-    }
+    // post {
+    //     always {
+    //         archiveArtifacts artifacts: 'allure-results/**/*'
+
+    //         publishHTML (target : [allowMissing: false,
+    //         alwaysLinkToLastBuild: true,
+    //         keepAll: true,
+    //         reportDir: 'allure-report',
+    //         reportFiles: 'index.html',
+    //         reportName: 'allure-report',
+    //         reportTitles: '', 
+    //         useWrapperFileDirectly: true])
+    //     }
+    // }
 }

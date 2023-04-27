@@ -1,6 +1,8 @@
 package Driver;
 
 
+import io.cucumber.java.hu.De;
+import java.util.Dictionary;
 import org.apache.commons.exec.OS;
 
 import org.openqa.selenium.Platform;
@@ -48,6 +50,7 @@ public class DriverFactory {
         if(driver == null){
             DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
             desiredCapabilities.setPlatform(Platform.ANY);
+
             BrowserType browserType;
             try{
                 browserType = BrowserType.valueOf(browserName);
@@ -56,6 +59,11 @@ public class DriverFactory {
                 throw new IllegalArgumentException(browserName + " do not support");
             }
 
+            java.util.Map<String, Boolean> moonoption = new java.util.HashMap<>();
+
+            moonoption.put("enableVideo", true);
+            desiredCapabilities.setCapability("moon:options", moonoption);
+            
             switch (browserType){
                 case chrome:
                     desiredCapabilities.setBrowserName(BrowserType.chrome.getName());
