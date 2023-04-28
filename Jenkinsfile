@@ -87,10 +87,10 @@ pipeline {
                 script {
                     def blocks = [
                         [
-                            "type": "section",
+                            "type": "header",
                             "text": [
-                                "type": "mrkdwn",
-                                "text": "*:cry:AILED TEST:cry:*"
+                                "type": "plain_text",
+                                "text": "FAILED TEST",
                             ]
                         ],
                         [
@@ -100,7 +100,14 @@ pipeline {
                             "type": "section",
                             "text": [
                                 "type": "mrkdwn",
-                                "text": ":noti:Job *${env.JOB_NAME}* has been failed.\n*Summary:*\n${result}"
+                                "text": ":warning: Job *${env.JOB_NAME}* has been failed.\n*Summary:*"
+                            ]
+                        ],
+                        [
+                        "type": "section",
+                        "text": [
+                            "type": "mrkdwn",
+                            "text": "```${result}```"
                             ]
                         ],
                         [
@@ -110,7 +117,7 @@ pipeline {
                             "type": "section",
                             "text": [
                                 "type": "mrkdwn",
-                                "text": ":pushpin:More info at:\n• *Build URL:* ${env.BUILD_URL}console\n• *Allure Report:* ${env.BUILD_URL}allure-report"
+                                "text": ":pushpin: More info at:\n• *Build URL:* ${env.BUILD_URL}console\n• *Allure Report:* ${env.BUILD_URL}allure-report"
                             ]
                         ],
                     ]
