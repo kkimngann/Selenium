@@ -90,7 +90,7 @@ pipeline {
                             "type": "section",
                             "text": [
                                 "type": "mrkdwn",
-                                "text": "*:cry:     FAILED TEST*"
+                                "text": "*:cry:AILED TEST:cry:*"
                             ]
                         ],
                         [
@@ -100,7 +100,7 @@ pipeline {
                             "type": "section",
                             "text": [
                                 "type": "mrkdwn",
-                                "text": ":noti: Job *${env.JOB_NAME}* has been failed.\n*Summary:*\n${result}"
+                                "text": ":noti:Job *${env.JOB_NAME}* has been failed.\n*Summary:*\n${result}"
                             ]
                         ],
                         [
@@ -110,7 +110,7 @@ pipeline {
                             "type": "section",
                             "text": [
                                 "type": "mrkdwn",
-                                "text": ":point_right:More info at:\n *Build URL:* ${env.BUILD_URL}console\n *Allure Report:* ${env.BUILD_URL}allure-report"
+                                "text": ":pushpin:More info at:\n• *Build URL:* ${env.BUILD_URL}console\n• *Allure Report:* ${env.BUILD_URL}allure-report"
                             ]
                         ],
                     ]
@@ -122,7 +122,7 @@ pipeline {
                         
                         def failedTest = readFile("failedTest.txt").trim().split("\n")
                         if (failedTest.size() != 0) {
-                            slackSend channel: 'selenium-notifications', blocks: blocks, teamDomain: 'agileops', tokenCredentialId: 'jenkins-slack', botUser: true
+                            slackSend channel: 'automation-test-notifications', blocks: blocks, teamDomain: 'agileops', tokenCredentialId: 'jenkins-slack', botUser: true
                         }
                     }
                 }
