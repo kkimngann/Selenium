@@ -90,7 +90,7 @@ pipeline {
                             "type": "section",
                             "text": [
                                 "type": "mrkdwn",
-                                "text": "*TEST FAILED*"
+                                "text": "*:cry:     FAILED TEST*"
                             ]
                         ],
                         [
@@ -110,7 +110,7 @@ pipeline {
                             "type": "section",
                             "text": [
                                 "type": "mrkdwn",
-                                "text": "More info at:\n *Build URL:* ${env.BUILD_URL}console\n *Allure Report:* ${env.BUILD_URL}allure-report"
+                                "text": ":point_right:More info at:\n *Build URL:* ${env.BUILD_URL}console\n *Allure Report:* ${env.BUILD_URL}allure-report"
                             ]
                         ],
                     ]
