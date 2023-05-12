@@ -75,10 +75,14 @@ public class DriverFactory {
                     desiredCapabilities.setBrowserName(BrowserType.safari.getName());
                     break;
             }
+            String username = System.getProperty("BROWSERSTACK_USERNAME");
+            String accessKey = System.getProperty("BROWSERSTACK_ACCESSKEY");
 
+            // Create a ChromeOptions object and set the desired capabilities.
 
-            String gridHub = System.getProperty("gridHub");
-            String hub = gridHub +"/wd/hub";
+            // Create a RemoteWebDriver object and pass the BrowserStack URL, username, access key, and desired capabilities.
+            String hub = "https://" + username + ":" + accessKey + "@hub.browserstack.com/wd/hub";
+
             try{
 
                 driver = new RemoteWebDriver(new URL(hub), desiredCapabilities);
