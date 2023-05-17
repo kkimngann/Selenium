@@ -129,18 +129,18 @@ pipeline {
         }
     }
 
-    // post {
-    //     always {
-    //         archiveArtifacts artifacts: 'allure-results/**/*'
+    post {
+        always {
+            archiveArtifacts artifacts: 'allure-results/**/*'
 
-    //         publishHTML (target : [allowMissing: false,
-    //         alwaysLinkToLastBuild: true,
-    //         keepAll: true,
-    //         reportDir: 'allure-report',
-    //         reportFiles: 'index.html',
-    //         reportName: 'allure-report',
-    //         reportTitles: '', 
-    //         useWrapperFileDirectly: true])
-    //     }
-    // }
+            publishHTML (target : [allowMissing: false,
+            alwaysLinkToLastBuild: true,
+            keepAll: true,
+            reportDir: 'allure-report',
+            reportFiles: 'index.html',
+            reportName: 'allure-report',
+            reportTitles: '', 
+            useWrapperFileDirectly: true])
+        }
+    }
 }
