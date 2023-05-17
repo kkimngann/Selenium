@@ -69,16 +69,17 @@ pipeline {
                         container('maven') {
                             sh '''
                             mkdir -p .m2 && cp -rT /data ~/.m2 &> /dev/null
-                            mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DgridHub=http://moon.agileops.int/ > result.txt || true
+                            mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DBROWSERSTACK_USERNAME=${BROWSERSTACK_USERNAME} -DBROWSERSTACK_ACCESSKEY=${BROWSERSTACK_ACCESS_KEY} > result.txt || true
                             cp -rT ~/.m2 /data &> /dev/null
                             '''
                         }
                     }
 
                     result = sh returnStdout: true, script: 'cat result.txt | sed -n \'/Failed tests/,/Tests run/p\''
-                    // container('minio-cli') {
-                    //     sh "mc mirror /data minio/selenium/.m2 --overwrite &> /dev/null"
-                    // }
+                    
+                    container('minio-cli') {
+                        sh "mc mirror /data minio/selenium/.m2 --overwrite &> /dev/null"
+                    }
                 }
             }
         }
@@ -88,10 +89,10 @@ pipeline {
                 script {
                     def blocks = [
                         [
-                            "type": "section",
+                            "type": "header",
                             "text": [
-                                "type": "mrkdwn",
-                                "text": "*TEST FAILED*"
+                                "type": "plain_text",
+                                "text": "FAILED TEST",
                             ]
                         ],
                         [
@@ -101,7 +102,14 @@ pipeline {
                             "type": "section",
                             "text": [
                                 "type": "mrkdwn",
-                                "text": "Job *${env.JOB_NAME}* has been failed.\n*Summary:*\n${result}"
+                                "text": ":warning: Job *${env.JOB_NAME}* has been failed.\n*Summary:*"
+                            ]
+                        ],
+                        [
+                        "type": "section",
+                        "text": [
+                            "type": "mrkdwn",
+                            "text": "```${result}```"
                             ]
                         ],
                         [
@@ -111,12 +119,11 @@ pipeline {
                             "type": "section",
                             "text": [
                                 "type": "mrkdwn",
-                                "text": "More info at:\n *Build URL:* ${env.BUILD_URL}console\n *Allure Report:* ${env.BUILD_URL}allure-report"
+                                "text": ":pushpin: More info at:\n• *Build URL:* ${env.BUILD_URL}console\n• *Allure Report:* ${env.BUILD_URL}allure-report"
                             ]
                         ],
                     ]
 
-                    browserStackReportPublisher 'automate'
                     dir('allure-results') {
                         container('jq') { 
                             sh 'jq -s \'.[] | select(.status != "passed") | .uuid\' *-result.json > failedTest.txt'
@@ -124,7 +131,7 @@ pipeline {
                         
                         def failedTest = readFile("failedTest.txt").trim().split("\n")
                         if (failedTest.size() != 0) {
-                            slackSend channel: 'selenium-notifications', blocks: blocks, teamDomain: 'agileops', tokenCredentialId: 'jenkins-slack', botUser: true
+                            slackSend channel: 'automation-test-notifications', blocks: blocks, teamDomain: 'agileops', tokenCredentialId: 'jenkins-slack', botUser: true
                         }
                     }
                 }
@@ -132,18 +139,18 @@ pipeline {
         }
     }
 
-    // post {
-    //     always {
-    //         archiveArtifacts artifacts: 'allure-results/**/*'
+    post {
+        always {
+            archiveArtifacts artifacts: 'allure-results/**/*'
 
-    //         publishHTML (target : [allowMissing: false,
-    //         alwaysLinkToLastBuild: true,
-    //         keepAll: true,
-    //         reportDir: 'allure-report',
-    //         reportFiles: 'index.html',
-    //         reportName: 'allure-report',
-    //         reportTitles: '', 
-    //         useWrapperFileDirectly: true])
-    //     }
-    // }
+            publishHTML (target : [allowMissing: false,
+            alwaysLinkToLastBuild: true,
+            keepAll: true,
+            reportDir: 'allure-report',
+            reportFiles: 'index.html',
+            reportName: 'allure-report',
+            reportTitles: '', 
+            useWrapperFileDirectly: true])
+        }
+    }
 }
