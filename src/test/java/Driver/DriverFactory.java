@@ -11,6 +11,8 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.JavascriptExecutor;
+
 
 import java.net.URL;
 import java.time.Duration;
@@ -98,6 +100,10 @@ public class DriverFactory {
 
     public void closeBrowserSession(){
         if(driver != null){
+            // declare the JavascriptExecutor class
+            JavascriptExecutor jse = (JavascriptExecutor)driver;
+            Object response = jse.executeScript("browserstack_executor: {\"action\": \"getSessionDetails\"}");
+            System.out.println(response);
             driver.quit();
         }
     }
