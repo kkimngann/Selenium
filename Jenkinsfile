@@ -65,12 +65,14 @@ pipeline {
         stage('automated test'){
             steps {
                 script {
-                    container('maven') {
-                        sh '''
-                        mkdir -p .m2 && cp -rT /data ~/.m2 &> /dev/null
-                        mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DgridHub=http://moon.agileops.int/ > result.txt || true
-                        cp -rT ~/.m2 /data &> /dev/null
-                        '''
+                    browserstack('ngannguyen-browserstack') {
+                        container('maven') {
+                            sh '''
+                            mkdir -p .m2 && cp -rT /data ~/.m2 &> /dev/null
+                            mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DgridHub=http://moon.agileops.int/ > result.txt || true
+                            cp -rT ~/.m2 /data &> /dev/null
+                            '''
+                        }
                     }
 
                     result = sh returnStdout: true, script: 'cat result.txt | sed -n \'/Failed tests/,/Tests run/p\''
@@ -114,6 +116,7 @@ pipeline {
                         ],
                     ]
 
+                    browserStackReportPublisher 'automate'
                     dir('allure-results') {
                         container('jq') { 
                             sh 'jq -s \'.[] | select(.status != "passed") | .uuid\' *-result.json > failedTest.txt'
