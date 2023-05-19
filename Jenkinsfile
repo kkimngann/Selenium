@@ -125,7 +125,7 @@ pipeline {
                         
                         def failedTest = readFile("failedTest.txt").trim().split("\n")
                         if (failedTest.size() != 0) {
-                            slackSend channel: 'selenium-notifications', blocks: blocks, teamDomain: 'agileops', tokenCredentialId: 'jenkins-slack', botUser: true
+                            slackSend channel: 'automation-test-notifications', blocks: blocks, teamDomain: 'agileops', tokenCredentialId: 'jenkins-slack', botUser: true
                         }
                     }
                 }
