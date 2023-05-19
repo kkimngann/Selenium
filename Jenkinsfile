@@ -73,7 +73,7 @@ pipeline {
                         '''
                     }
 
-                    result = sh returnStdout: true, script: 'awk '/Tests run/' result.txt'
+                    result = sh returnStdout: true, script: 'awk \'/Tests run/\' result.txt'
                     container('minio-cli') {
                         sh "mc mirror /data minio/selenium/.m2 --overwrite &> /dev/null"
                     }
