@@ -74,7 +74,7 @@ pipeline {
                             '''
                         }
                     }
-                    result = sh (script: 'awk \'/Tests run/\' result.txt', returnStdout: true).trim()
+                    result = sh (script: 'grep "Tests run" result.txt | tail -1', returnStdout: true).trim()
                     
                     container('minio-cli') {
                         sh "mc mirror /data minio/selenium/.m2 --overwrite &> /dev/null"
