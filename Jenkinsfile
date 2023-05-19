@@ -7,8 +7,8 @@ pipeline {
             apiVersion: v1
             kind: Pod
             metadata:
-                labels:
-                    jenkin-job: selenium
+              labels:
+                jenkin-job: selenium
             spec:
                 containers:
                 - name: maven
