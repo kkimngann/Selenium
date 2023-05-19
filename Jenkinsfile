@@ -74,9 +74,9 @@ pipeline {
                     }
 
                     result = sh returnStdout: true, script: 'cat result.txt | sed -n \'/Failed tests/,/Tests run/p\''
-                    // container('minio-cli') {
-                    //     sh "mc mirror /data minio/selenium/.m2 --overwrite &> /dev/null"
-                    // }
+                    container('minio-cli') {
+                        sh "mc mirror /data minio/selenium/.m2 --overwrite &> /dev/null"
+                    }
                 }
             }
         }
@@ -114,6 +114,10 @@ pipeline {
                         ],
                     ]
 
+                    container('allure') {
+                        sh 'allure generate --clean'
+                    }
+
                     dir('allure-results') {
                         container('jq') { 
                             sh 'jq -s \'.[] | select(.status != "passed") | .uuid\' *-result.json > failedTest.txt'
@@ -121,7 +125,7 @@ pipeline {
                         
                         def failedTest = readFile("failedTest.txt").trim().split("\n")
                         if (failedTest.size() != 0) {
-                            slackSend channel: 'selenium-notifications', blocks: blocks, teamDomain: 'agileops', tokenCredentialId: 'jenkins-slack', botUser: true
+                            // slackSend channel: 'selenium-notifications', blocks: blocks, teamDomain: 'agileops', tokenCredentialId: 'jenkins-slack', botUser: true
                         }
                     }
                 }
