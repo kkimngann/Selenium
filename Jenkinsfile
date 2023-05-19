@@ -72,7 +72,7 @@ pipeline {
                     }
                     // Get summary test result
                     result = sh returnStdout: true, script: 'cat result.txt | sed -n \'/Failed tests/,/Tests run/p\''
-
+                    // Save cache for the next build
                     container('minio-cli') {
                         sh "mc mirror /data minio/selenium/.m2 --overwrite &> /dev/null"
                     }
