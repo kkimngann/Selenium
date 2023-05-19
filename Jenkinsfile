@@ -8,7 +8,7 @@ pipeline {
             kind: Pod
             metadata:
               labels:
-                jenkin-job: selenium
+                jenkin-job: selenium-browserstack
             spec:
                 containers:
                 - name: maven
@@ -102,7 +102,7 @@ pipeline {
             alwaysLinkToLastBuild: true,
             keepAll: true,
             reportDir: 'allure-report',
-            reportFiles: '**/*.html',
+            reportFiles: 'index.html',
             reportName: 'allure-report',
             reportTitles: '', 
             useWrapperFileDirectly: true])
