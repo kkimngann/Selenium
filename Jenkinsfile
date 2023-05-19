@@ -1,5 +1,4 @@
 def result = ''
-def buildID = ''
 
 pipeline {
     agent {
@@ -75,10 +74,7 @@ pipeline {
                             '''
                         }
                     }
-
-                    // result = sh returnStdout: true, script: 'cat result.txt | sed -n \'/Failed tests/,/Tests run/p\''
-                    sh 'cat result.txt'
-                    buildID = sh returnStdout: true, script: 'cat build_hashed_id.txt'
+                    result = sh (script: 'awk \'/Tests run/\' result.txt', returnStdout: true).trim()
                     
                     container('minio-cli') {
                         sh "mc mirror /data minio/selenium/.m2 --overwrite &> /dev/null"
@@ -112,10 +108,8 @@ pipeline {
             useWrapperFileDirectly: true])
 
             script {
-                // Send result notification to Slack
-                def jobName = build job: 'selenium-browserstack', parameters: [[$class: 'StringParameterValue', name:'HOST',value: HOST]], propagate: false, wait:true
-                def jobResult = jobName.getResult()
-                
+                // Get hashed build ID after test finished
+                def buildID = readFile 'build_hashed_id.txt'
                 // Define Slack message blocks
                 def blocks = [
                     [
@@ -132,7 +126,7 @@ pipeline {
                         "type": "section",
                         "text": [
                             "type": "mrkdwn",
-                            "text": ":sunny: Job *${env.JOB_NAME}*'s result is ${jobResult}}.\n*Summary:*"
+                            "text": ":sunny: Job *${env.JOB_NAME}*'s result is ${currentBuild.currentResult}.\n*Summary:*"
                         ]
                     ],
                     [
