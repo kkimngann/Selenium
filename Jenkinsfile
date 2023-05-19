@@ -73,7 +73,7 @@ pipeline {
                         '''
                     }
 
-                    result = sh returnStdout: true, script: 'cat result.txt | sed -n \'/Failed tests/,/Tests run/p\''
+                    result = sh returnStdout: true, script: 'awk '/Tests run/' result.txt'
                     container('minio-cli') {
                         sh "mc mirror /data minio/selenium/.m2 --overwrite &> /dev/null"
                     }
@@ -125,7 +125,7 @@ pipeline {
                         
                         def failedTest = readFile("failedTest.txt").trim().split("\n")
                         if (failedTest.size() != 0) {
-                            // slackSend channel: 'selenium-notifications', blocks: blocks, teamDomain: 'agileops', tokenCredentialId: 'jenkins-slack', botUser: true
+                            slackSend channel: 'selenium-notifications', blocks: blocks, teamDomain: 'agileops', tokenCredentialId: 'jenkins-slack', botUser: true
                         }
                     }
                 }
