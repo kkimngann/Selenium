@@ -74,8 +74,7 @@ pipeline {
                             '''
                         }
                     }
-
-                    result = sh returnStdout: true, script: 'cat result.txt | sed -n \'/Failed tests/,/Tests run/p\''
+                    result = sh (script: 'grep "Tests run" result.txt | tail -1', returnStdout: true).trim()
                     
                     container('minio-cli') {
                         sh "mc mirror /data minio/selenium/.m2 --overwrite &> /dev/null"
@@ -87,56 +86,8 @@ pipeline {
         stage('publish report'){
             steps {
                 script {
-                    def blocks = [
-                        [
-                            "type": "header",
-                            "text": [
-                                "type": "plain_text",
-                                "text": "FAILED TEST",
-                            ]
-                        ],
-                        [
-                            "type": "divider"
-                        ],
-                        [
-                            "type": "section",
-                            "text": [
-                                "type": "mrkdwn",
-                                "text": ":warning: Job *${env.JOB_NAME}* has been failed.\n*Summary:*"
-                            ]
-                        ],
-                        [
-                        "type": "section",
-                        "text": [
-                            "type": "mrkdwn",
-                            "text": "```${result}```"
-                            ]
-                        ],
-                        [
-                            "type": "divider"
-                        ],
-                        [
-                            "type": "section",
-                            "text": [
-                                "type": "mrkdwn",
-                                "text": ":pushpin: More info at:\n• *Build URL:* ${env.BUILD_URL}console\n• *Allure Report:* ${env.BUILD_URL}allure-report"
-                            ]
-                        ],
-                    ]
-
                     container('allure') {
                         sh 'allure generate --clean'
-                    }
-
-                    dir('allure-results') {
-                        container('jq') { 
-                            sh 'jq -s \'.[] | select(.status != "passed") | .uuid\' *-result.json > failedTest.txt'
-                        }
-                        
-                        def failedTest = readFile("failedTest.txt").trim().split("\n")
-                        if (failedTest.size() != 0) {
-                            slackSend channel: 'automation-test-notifications', blocks: blocks, teamDomain: 'agileops', tokenCredentialId: 'jenkins-slack', botUser: true
-                        }
                     }
                 }
             }
@@ -151,10 +102,55 @@ pipeline {
             alwaysLinkToLastBuild: true,
             keepAll: true,
             reportDir: 'allure-report',
-            reportFiles: 'index.html',
+            reportFiles: '**/*.html',
             reportName: 'allure-report',
             reportTitles: '', 
             useWrapperFileDirectly: true])
+
+            script {
+                // Get hashed build ID after test finished
+                def buildID = readFile 'build_hashed_id.txt'
+                // Define Slack message blocks
+                def blocks = [
+                    [
+                        "type": "header",
+                        "text": [
+                            "type": "plain_text",
+                            "text": "FINISHED TEST",
+                        ]
+                    ],
+                    [
+                        "type": "divider"
+                    ],
+                    [
+                        "type": "section",
+                        "text": [
+                            "type": "mrkdwn",
+                            "text": ":sunny: Job *${env.JOB_NAME}*'s result is ${currentBuild.currentResult}.\n*Summary:*"
+                        ]
+                    ],
+                    [
+                    "type": "section",
+                    "text": [
+                        "type": "mrkdwn",
+                        "text": "```${result}```"
+                        ]
+                    ],
+                    [
+                        "type": "divider"
+                    ],
+                    [
+                        "type": "section",
+                        "text": [
+                            "type": "mrkdwn",
+                            "text": ":pushpin: More info at:\n• *Build URL:* ${env.BUILD_URL}console\n• *Allure Report:* ${env.BUILD_URL}allure-report\n• *BrowserStack build URL:* https://automate.browserstack.com/dashboard/v2/builds/${buildID}"
+                        ]
+                    ],
+                ]
+
+                // Send notification
+                slackSend channel: 'automation-test-notifications', blocks: blocks, teamDomain: 'agileops', tokenCredentialId: 'jenkins-slack', botUser: true
+            }
         }
     }
 }
