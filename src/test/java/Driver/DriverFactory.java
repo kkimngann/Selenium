@@ -1,10 +1,15 @@
 package Driver;
 
 
+import io.cucumber.cienvironment.internal.com.eclipsesource.json.JsonObject;
 import io.cucumber.java.hu.De;
-import java.util.Dictionary;
-import org.apache.commons.exec.OS;
 
+import java.io.FileWriter;
+import java.util.Dictionary;
+import java.io.File;  // Import the File class
+import java.io.IOException;  // Import the IOException class to handle errors
+import org.apache.commons.exec.OS;
+import org.json.JSONObject;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -103,8 +108,20 @@ public class DriverFactory {
             // declare the JavascriptExecutor class
             JavascriptExecutor jse = (JavascriptExecutor)driver;
             Object response = jse.executeScript("browserstack_executor: {\"action\": \"getSessionDetails\"}");
-            System.out.println(response);
+            JSONObject json = new JSONObject(response.toString());
+            writeToFile((String) json.get("build_hashed_id"));
+            System.out.println("build_hashed_id: " + json.get("build_hashed_id"));
             driver.quit();
+        }
+    }
+    public static void writeToFile(String inputText){
+        try {
+            FileWriter myWriter = new FileWriter("build_hashed_id.txt");
+            myWriter.write(inputText);
+            myWriter.close();
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
         }
     }
 }
