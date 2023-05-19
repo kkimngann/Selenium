@@ -117,6 +117,7 @@ pipeline {
                     container('allure') {
                         sh 'allure generate --clean'
                     }
+                    sh 'ls -alh allure-report'
 
                     dir('allure-results') {
                         container('jq') { 
