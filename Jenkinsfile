@@ -20,7 +20,7 @@ pipeline {
                   - name: shared-data
                     mountPath: /data
                 - name: allure
-                  image: frankescobar/allure-docker-service:2.19.0
+                  image: frankescobar/allure-docker-service:2.21.0
                   command:
                   - cat
                   tty: true
@@ -123,6 +123,10 @@ pipeline {
                             ]
                         ],
                     ]
+
+                    container('allure') {
+                        sh 'allure generate --clean'
+                    }
 
                     dir('allure-results') {
                         container('jq') { 
