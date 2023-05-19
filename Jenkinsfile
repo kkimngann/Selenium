@@ -1,5 +1,3 @@
-def result = ''
-
 pipeline {
     agent {
         kubernetes {
@@ -72,8 +70,9 @@ pipeline {
                         cp -rT ~/.m2 /data &> /dev/null
                         '''
                     }
+                    // Get summary test result
+                    result = sh returnStdout: true, script: 'cat result.txt | sed -n \'/Failed tests/,/Tests run/p\''
 
-                    result = sh returnStdout: true, script: 'awk \'/Tests run/\' result.txt'
                     container('minio-cli') {
                         sh "mc mirror /data minio/selenium/.m2 --overwrite &> /dev/null"
                     }
@@ -89,7 +88,7 @@ pipeline {
                             "type": "section",
                             "text": [
                                 "type": "mrkdwn",
-                                "text": "*TEST FAILED*"
+                                "text": "*FAILED TEST*"
                             ]
                         ],
                         [
@@ -109,7 +108,7 @@ pipeline {
                             "type": "section",
                             "text": [
                                 "type": "mrkdwn",
-                                "text": "More info at:\n *Build URL:* ${env.BUILD_URL}console\n *Allure Report:* ${env.BUILD_URL}allure-report"
+                                "text": "More info at:\n *Build URL:* ${env.BUILD_URL}\n *Allure Report:* ${env.BUILD_URL}allure-report"
                             ]
                         ],
                     ]
@@ -117,15 +116,14 @@ pipeline {
                     container('allure') {
                         sh 'allure generate --clean'
                     }
-                    sh 'ls -alh allure-report'
 
                     dir('allure-results') {
                         container('jq') { 
                             sh 'jq -s \'.[] | select(.status != "passed") | .uuid\' *-result.json > failedTest.txt'
                         }
                         
-                        def failedTest = readFile("failedTest.txt").trim().split("\n")
-                        if (failedTest.size() != 0) {
+                        def file = readFile('failedTest.txt')
+                        if (file.trim().length() > 0) {
                             slackSend channel: 'automation-test-notifications', blocks: blocks, teamDomain: 'agileops', tokenCredentialId: 'jenkins-slack', botUser: true
                         }
                     }
