@@ -20,7 +20,7 @@ pipeline {
                   - name: shared-data
                     mountPath: /data
                 - name: allure
-                  image: frankescobar/allure-docker-service:2.21.0
+                  image: frankescobar/allure-docker-service:2.19.0
                   command:
                   - cat
                   tty: true
