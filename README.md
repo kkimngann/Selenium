@@ -21,9 +21,6 @@ java -jar selenium-server-4.8.1.jar hub --> start selenium grid server
 java -jar -Dwebdriver.gecko.driver=geckodriver -Dwebdriver.chrome.driver=chromedriver selenium-server-4.8.1.jar node --config node_config.json
 --> create node
 
-username= ngannguyen_ZlnD0X
-
-accesskey= Md17Ky4qUKKMGtdKpaZw
 
 mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DBROWSERSTACK_USERNAME=username -DBROWSERSTACK_ACCESSKEY=accesskey --> run test
 allure generate --clean --> generate report
