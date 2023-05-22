@@ -12,7 +12,7 @@ pipeline {
             spec:
                 containers:
                 - name: maven
-                  image: markhobson/maven-chrome:jdk-11
+                  image: maven:3.8.6-openjdk-11-slim
                   command:
                   - cat
                   tty: true
@@ -51,16 +51,16 @@ pipeline {
     }
 
     stages {
-        // stage('restore cache') {
-        //     steps {
-        //         script {
-        //             container('minio-cli') {
-        //                 sh "mc alias set minio http://minio.minio.svc.cluster.local:9000 vJlIj3mKR4Df9ZHt 9qZLIDh5A14IciJfEcmwGAk9iVQxHt4L"
-        //                 sh "mc mirror minio/selenium/.m2 /data &> /dev/null"
-        //             }
-        //         }
-        //     }
-        // }
+        stage('restore cache') {
+            steps {
+                script {
+                    container('minio-cli') {
+                        sh "mc alias set minio http://minio.minio.svc.cluster.local:9000 vJlIj3mKR4Df9ZHt 9qZLIDh5A14IciJfEcmwGAk9iVQxHt4L"
+                        sh "mc mirror minio/selenium/.m2 /data &> /dev/null"
+                    }
+                }
+            }
+        }
 
         stage('automated test'){
             steps {
@@ -68,15 +68,17 @@ pipeline {
                     browserstack('binhpham_browserstack') {
                         container('maven') {
                             sh '''
+                            mkdir -p .m2 && cp -rT /data ~/.m2 &> /dev/null
                             mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DBROWSERSTACK_USERNAME=${BROWSERSTACK_USERNAME} -DBROWSERSTACK_ACCESSKEY=${BROWSERSTACK_ACCESS_KEY} > result.txt || true
+                            cp -rT ~/.m2 /data &> /dev/null
                             '''
                         }
                     }
                     result = sh (script: 'grep "Tests run" result.txt | tail -1', returnStdout: true).trim()
                     
-                    // container('minio-cli') {
-                    //     sh "mc mirror /data minio/selenium/.m2 --overwrite &> /dev/null"
-                    // }
+                    container('minio-cli') {
+                        sh "mc mirror /data minio/selenium/.m2 --overwrite &> /dev/null"
+                    }
                 }
             }
         }
