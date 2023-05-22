@@ -88,7 +88,7 @@ public class DriverFactory {
             // Create a ChromeOptions object and set the desired capabilities.
 
             // Create a RemoteWebDriver object and pass the BrowserStack URL, username, access key, and desired capabilities.
-            String hub = "https://" + username + ":" + accessKey + "@hub.browserstack.com:80/wd/hub";
+            String hub = "https://" + username + ":" + accessKey + "@hub.browserstack.com:4444/wd/hub";
 
             try{
 
