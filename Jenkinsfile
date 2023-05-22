@@ -65,7 +65,7 @@ pipeline {
         stage('automated test'){
             steps {
                 script {
-                    browserstack('ngannguyen-browserstack') {
+                    browserstack('binhpham_browserstack') {
                         container('maven') {
                             sh '''
                             mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DBROWSERSTACK_USERNAME=${BROWSERSTACK_USERNAME} -DBROWSERSTACK_ACCESSKEY=${BROWSERSTACK_ACCESS_KEY} > result.txt || true
