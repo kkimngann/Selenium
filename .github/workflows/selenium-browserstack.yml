@@ -13,7 +13,7 @@ jobs:
     - name: Trigger jenkins job
       uses: jabbukka/jenkins-trigger@main
       with:
-        url: https://jenkins.aandd.io/
+        url: ${{ secrets.JENKINS_URL }}
         job_name: "selenium-browserstack"
         user_name: admin
         api_token: ${{ secrets.JENKINS_TOKEN }}
