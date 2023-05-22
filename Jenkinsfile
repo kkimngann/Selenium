@@ -12,7 +12,7 @@ pipeline {
             spec:
                 containers:
                 - name: maven
-                  image: maven:3.8.6-openjdk-11-slim
+                  image: markhobson/maven-chrome:jdk-11
                   command:
                   - cat
                   tty: true
@@ -69,7 +69,7 @@ pipeline {
                         container('maven') {
                             sh '''
                             mkdir -p .m2 && cp -rT /data ~/.m2 &> /dev/null
-                            mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DBROWSERSTACK_USERNAME=${BROWSERSTACK_USERNAME} -DBROWSERSTACK_ACCESSKEY=${BROWSERSTACK_ACCESS_KEY} > result.txt || true
+                            unset MAVEN_CONFIG && mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DBROWSERSTACK_USERNAME=${BROWSERSTACK_USERNAME} -DBROWSERSTACK_ACCESSKEY=${BROWSERSTACK_ACCESS_KEY} > result.txt || true
                             cp -rT ~/.m2 /data &> /dev/null
                             '''
                         }
