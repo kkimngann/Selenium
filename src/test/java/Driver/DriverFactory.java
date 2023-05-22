@@ -36,7 +36,7 @@ public class DriverFactory {
             chromeDriverLocation = currentProjectLocation + "\\src\\test\\resources\\drivers\\chromedriver";
         }
         if(chromeDriverLocation.isEmpty()){
-            throw  new IllegalArgumentException("Can not detect OS type");
+            throw  new IllegalArgumentException("Cannot detect OS type");
         }
         System.setProperty("webdriver.chrome.driver", chromeDriverLocation);
 
@@ -88,7 +88,7 @@ public class DriverFactory {
             // Create a ChromeOptions object and set the desired capabilities.
 
             // Create a RemoteWebDriver object and pass the BrowserStack URL, username, access key, and desired capabilities.
-            String hub = "https://" + username + ":" + accessKey + "@hub.browserstack.com/wd/hub";
+            String hub = "https://" + username + ":" + accessKey + "@hub.browserstack.com:80/wd/hub";
 
             try{
 
