@@ -11,25 +11,25 @@ public class LaunchBrowser {
 
         String chromeDriverLocation = "";
         String chromeDefaultProfileLocation = System.getProperty("user.home");
-        if (OS.isFamilyMac()) {
+        if(OS.isFamilyMac()) {
             chromeDriverLocation = currentProjectLocation + "/src/test/resources/drivers/chromedriver";
             chromeDefaultProfileLocation = chromeDefaultProfileLocation + "/Library/Application Support/Google/Chrome";
         }
-        if (OS.isFamilyWindows()) {
+        if(OS.isFamilyWindows()){
             chromeDriverLocation = currentProjectLocation + "\\src\\test\\resources\\drivers\\chromedriver";
         }
-        if (chromeDriverLocation.isEmpty()) {
-            throw new IllegalArgumentException("Can not detect OS type");
+        if(chromeDriverLocation.isEmpty()){
+            throw  new IllegalArgumentException("Can not detect OS type");
         }
         System.setProperty("webdriver.chrome.driver", chromeDriverLocation);
 
         ChromeOptions chromeOptions = new ChromeOptions();
         chromeOptions.addArguments("--incognito");
-        // chromeOptions.addArguments("--start-maximized");
-        chromeOptions.addArguments("--headless");
-        // chromeOptions.addArguments("--no-sandbox");
-        // chromeOptions.addArguments("--disable-dev-shm-usage");
-        // chromeOptions.addArguments("user-data-dir=" + chromeDefaultProfileLocation);
+        //chromeOptions.addArguments("--start-maximized");
+        //chromeOptions.addArguments("--headless");
+        //chromeOptions.addArguments("--no-sandbox");
+        //chromeOptions.addArguments("--disable-dev-shm-usage");
+        //chromeOptions.addArguments("user-data-dir=" + chromeDefaultProfileLocation);
         WebDriver driver = new ChromeDriver(chromeOptions);
         driver.manage().window().maximize();
         driver.get("https://learn.sdetpro.com");
