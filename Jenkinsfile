@@ -54,9 +54,11 @@ pipeline {
         stage('restore cache') {
             steps {
                 script {
-                    container('minio-cli') {
-                        sh "mc alias set minio http://minio.minio.svc.cluster.local:9000 vJlIj3mKR4Df9ZHt 9qZLIDh5A14IciJfEcmwGAk9iVQxHt4L"
-                        sh "mc mirror minio/selenium/.m2 /data &> /dev/null"
+                    withCredentials([file(credentialsId: 'minio_admin', usernameVariable: 'MINIO_USERNAME', passwordVariable: 'MINIO_PASSWORD')]) {
+                        container('minio-cli') {
+                            sh "mc alias set minio http://minio.minio.svc.cluster.local:9000 ${MINIO_USERNAME} ${MINIO_PASSWORD}"
+                            sh "mc mirror minio/selenium/.m2 /data &> /dev/null"
+                        }
                     }
                 }
             }
