@@ -1,46 +1,158 @@
+def result = ''
+
 pipeline {
-    // Setup worker to run the pipeline
     agent {
-        node { label 'autotest_slave'}
-    }
-    environment {
-        PATH = "/opt/apache-maven-3.9.1/bin:$PATH"
-        LANG = 'en_US.UTF-8'
-        LANGUAGE = 'en_US.UTF-8'
-        LC_ALL = 'en_US.UTF-8'
+        kubernetes {
+        yaml '''
+            apiVersion: v1
+            kind: Pod
+            metadata:
+              labels:
+                jenkin-job: selenium-browserstack
+            spec:
+                containers:
+                - name: maven
+                  image: maven:3.8.6-openjdk-11-slim
+                  command:
+                  - cat
+                  tty: true
+                  volumeMounts:
+                  - name: shared-data
+                    mountPath: /data
+                - name: allure
+                  image: frankescobar/allure-docker-service:2.19.0
+                  command:
+                  - cat
+                  tty: true
+                  volumeMounts:
+                  - name: shared-data
+                    mountPath: /data
+                - name: minio-cli
+                  image: minio/mc
+                  command:
+                  - cat
+                  tty: true
+                  volumeMounts:
+                  - name: shared-data
+                    mountPath: /data
+                - name: jq
+                  image: stedolan/jq:latest
+                  command:
+                  - cat
+                  tty: true
+                  volumeMounts:
+                  - name: shared-data
+                    mountPath: /data
+                volumes:
+                - name: shared-data
+                  emptyDir: {}
+            '''
+        }
     }
 
     stages {
-        stage('Build'){
+        stage('restore cache') {
             steps {
                 script {
-                    sh '''
-                        mvn clean test -DsuiteFile='src/test/resources/test-suites/CucumberRunner.xml' -DgridHub='http://localhost:4444'
-                        allure generate --clean
-                    '''
+                    withCredentials([usernamePassword(credentialsId: 'minio_admin', usernameVariable: 'MINIO_USERNAME', passwordVariable: 'MINIO_PASSWORD')]) {
+                        container('minio-cli') {
+                            sh 'mc alias set minio http://minio.minio.svc.cluster.local:9000 ${MINIO_USERNAME} ${MINIO_PASSWORD}'
+                            sh 'mc mirror minio/selenium/.m2 /data &> /dev/null'
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('automated test'){
+            steps {
+                script {
+                    browserstack('binhpham_browserstack') {
+                        container('maven') {
+                            sh '''
+                            mkdir -p .m2 && cp -rT /data ~/.m2 &> /dev/null
+                            mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DBROWSERSTACK_USERNAME=${BROWSERSTACK_USERNAME} -DBROWSERSTACK_ACCESSKEY=${BROWSERSTACK_ACCESS_KEY} > result.txt || true
+                            cp -rT ~/.m2 /data &> /dev/null
+                            '''
+                        }
+                    }
+                    result = sh (script: 'grep "Tests run" result.txt | tail -1', returnStdout: true).trim()
+                    
+                    container('minio-cli') {
+                        sh "mc mirror /data minio/selenium/.m2 --overwrite &> /dev/null"
+                    }
+                }
+            }
+        }
+
+        stage('publish report'){
+            steps {
+                script {
+                    container('allure') {
+                        sh 'allure generate --clean'
+                    }
                 }
             }
         }
     }
 
     post {
-        success {
-            // Notify slack channel, email, etc.
-            echo 'success'
-            
-            // Publish the report
+        always {
+            archiveArtifacts artifacts: 'allure-results/**/*'
+
             publishHTML (target : [allowMissing: false,
-                alwaysLinkToLastBuild: true,
-                keepAll: true,
-                reportDir: 'allure-report',
-                reportFiles: 'index.html',
-                reportName: 'allure-report',
-                reportTitles: '', 
-                useWrapperFileDirectly: true])
-        }
-        failure {
-            // Notify slack channel, email, etc.
-            echo 'failure'
+            alwaysLinkToLastBuild: true,
+            keepAll: true,
+            reportDir: 'allure-report',
+            reportFiles: 'index.html',
+            reportName: 'allure-report',
+            reportTitles: '', 
+            useWrapperFileDirectly: true])
+
+            script {
+                // Get hashed build ID after test finished
+                def buildID = readFile 'build_hashed_id.txt'
+                // Define Slack message blocks
+                def blocks = [
+                    [
+                        "type": "header",
+                        "text": [
+                            "type": "plain_text",
+                            "text": "FINISHED TEST",
+                        ]
+                    ],
+                    [
+                        "type": "divider"
+                    ],
+                    [
+                        "type": "section",
+                        "text": [
+                            "type": "mrkdwn",
+                            "text": ":sunny: Job *${env.JOB_NAME}*'s result is ${currentBuild.currentResult}.\n*Summary:*"
+                        ]
+                    ],
+                    [
+                    "type": "section",
+                    "text": [
+                        "type": "mrkdwn",
+                        "text": "```${result}```"
+                        ]
+                    ],
+                    [
+                        "type": "divider"
+                    ],
+                    [
+                        "type": "section",
+                        "text": [
+                            "type": "mrkdwn",
+                            "text": ":pushpin: More info at:\n• *Build URL:* ${env.BUILD_URL}console\n• *Allure Report:* ${env.BUILD_URL}allure-report\n• *BrowserStack build URL:* https://automate.browserstack.com/dashboard/v2/builds/${buildID}"
+                        ]
+                    ],
+                ]
+
+                // Send notification
+                slackSend channel: 'automation-test-notifications', blocks: blocks, teamDomain: 'agileops', tokenCredentialId: 'jenkins-slack', botUser: true
+            }
         }
     }
 }

@@ -1,21 +1,26 @@
 package Driver;
 
+
+import io.cucumber.cienvironment.internal.com.eclipsesource.json.JsonObject;
 import io.cucumber.java.hu.De;
+
+import java.io.FileWriter;
+import java.util.Dictionary;
+import java.io.File;  // Import the File class
+import java.io.IOException;  // Import the IOException class to handle errors
 import org.apache.commons.exec.OS;
-import org.checkerframework.checker.units.qual.C;
+import org.json.JSONObject;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.safari.SafariDriver;
+import org.openqa.selenium.JavascriptExecutor;
 
-import java.net.MalformedURLException;
+
 import java.net.URL;
 import java.time.Duration;
-import java.util.Properties;
-
 public class DriverFactory {
     private WebDriver driver;
     public static WebDriver getChromeDriver(){
@@ -31,7 +36,7 @@ public class DriverFactory {
             chromeDriverLocation = currentProjectLocation + "\\src\\test\\resources\\drivers\\chromedriver";
         }
         if(chromeDriverLocation.isEmpty()){
-            throw  new IllegalArgumentException("Can not detect OS type");
+            throw  new IllegalArgumentException("Cannot detect OS type");
         }
         System.setProperty("webdriver.chrome.driver", chromeDriverLocation);
 
@@ -52,6 +57,7 @@ public class DriverFactory {
         if(driver == null){
             DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
             desiredCapabilities.setPlatform(Platform.ANY);
+
             BrowserType browserType;
             try{
                 browserType = BrowserType.valueOf(browserName);
@@ -60,6 +66,11 @@ public class DriverFactory {
                 throw new IllegalArgumentException(browserName + " do not support");
             }
 
+            java.util.Map<String, Boolean> moonoption = new java.util.HashMap<>();
+
+            moonoption.put("enableVideo", true);
+            desiredCapabilities.setCapability("moon:options", moonoption);
+            
             switch (browserType){
                 case chrome:
                     desiredCapabilities.setBrowserName(BrowserType.chrome.getName());
@@ -71,16 +82,16 @@ public class DriverFactory {
                     desiredCapabilities.setBrowserName(BrowserType.safari.getName());
                     break;
             }
+            String username = System.getProperty("BROWSERSTACK_USERNAME");
+            String accessKey = System.getProperty("BROWSERSTACK_ACCESSKEY");
 
-            ChromeOptions chromeOptions = new ChromeOptions();
-            chromeOptions.addArguments("--incognito");
-            chromeOptions.addArguments("--remote-allow-origins=*");
-            //chromeOptions.addArguments("--headless");
+            // Create a ChromeOptions object and set the desired capabilities.
 
-            String gridHub = System.getProperty("gridHub");
-            String hub = gridHub +"/wd/hub";
+            // Create a RemoteWebDriver object and pass the BrowserStack URL, username, access key, and desired capabilities.
+            String hub = "https://" + username + ":" + accessKey + "@hub.browserstack.com/wd/hub";
+
             try{
-                desiredCapabilities.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
+
                 driver = new RemoteWebDriver(new URL(hub), desiredCapabilities);
                 driver.manage().window().maximize();
                 driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(15));
@@ -90,5 +101,27 @@ public class DriverFactory {
             }
         }
         return driver;
+    }
+
+    public void closeBrowserSession(){
+        if(driver != null){
+            // declare the JavascriptExecutor class
+            JavascriptExecutor jse = (JavascriptExecutor)driver;
+            Object response = jse.executeScript("browserstack_executor: {\"action\": \"getSessionDetails\"}");
+            JSONObject json = new JSONObject(response.toString());
+            writeToFile((String) json.get("build_hashed_id"));
+            System.out.println("build_hashed_id: " + json.get("build_hashed_id"));
+            driver.quit();
+        }
+    }
+    public static void writeToFile(String inputText){
+        try {
+            FileWriter myWriter = new FileWriter("build_hashed_id.txt");
+            myWriter.write(inputText);
+            myWriter.close();
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
     }
 }

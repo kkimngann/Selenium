@@ -33,10 +33,18 @@ public class TopMenuComponent extends Component {
             return component.findElement(By.tagName("a"));
         }
 
+        public String getMainCategoryText(){
+            return component.findElement(By.tagName("a")).getText();
+        }
+
         public List<CategoryItemComponent> categoryItemComponents(){
             Actions actions = new Actions(driver);
             actions.moveToElement(component).perform();
             return findComponents(CategoryItemComponent.class, driver);
+        }
+
+        public void clickMenu() {
+            component.click();
         }
     }
 
@@ -44,6 +52,9 @@ public class TopMenuComponent extends Component {
     public static class CategoryItemComponent extends Component{
         public CategoryItemComponent(WebDriver driver, WebElement component) {
             super(driver, component);
+        }
+        public void clickSubmenu(){
+            component.click();
         }
     }
 }

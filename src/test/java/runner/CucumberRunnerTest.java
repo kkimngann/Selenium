@@ -4,101 +4,90 @@ import Driver.DriverFactory;
 import io.cucumber.testng.AbstractTestNGCucumberTests;
 import io.cucumber.testng.CucumberOptions;
 import io.qameta.allure.Allure;
+import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.testng.ITestResult;
-import org.testng.TestNG;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Parameters;
+import org.testng.annotations.*;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.GregorianCalendar;
-import java.util.List;
+import java.util.*;
 
-@CucumberOptions(tags = "@Registration",
-
+@CucumberOptions(tags="${cucumber.filter.tags}",
         features = "src/test/resources/features", glue = {"stepdefinitions"},
         plugin = { "pretty", "json:target/cucumber-reports/cucumber.json",	"html:target/cucumber-reports/cucumberreport.html" }, monochrome = true)
-public class CucumberRunnerTest extends AbstractTestNGCucumberTests{
-    protected static WebDriver driver;
-    private final static List<DriverFactory> webDriverThreadPool = Collections.synchronizedList(new ArrayList<>());
+public class CucumberRunnerTest extends AbstractTestNGCucumberTests {
+    private final static List<DriverFactory> webdriverThreadPool = Collections.synchronizedList(new ArrayList<>());
     private static ThreadLocal<DriverFactory> driverThread;
-    private String browser;
+    private static String browser;
+    protected WebDriver driver;
 
     protected WebDriver getDriver(){
-        //return driverThread.get().getDriver(System.getProperty("browser"));
-        return driverThread.get().getDriver(this.browser);
+        if(this.driver == null){
+            this.driver = driverThread.get().getDriver(browser);
+            return this.driver;
+        }
+        return this.driver;
     }
+
     @BeforeTest(description = "Init browser session")
     @Parameters({"browser"})
     public void initBrowserSession(String browser){
         this.browser = browser;
         driverThread = ThreadLocal.withInitial(() ->{
             DriverFactory webdriverThread = new DriverFactory();
-            webDriverThreadPool.add(webdriverThread);
+            webdriverThreadPool.add(webdriverThread);
             return webdriverThread;
         });
-        driver = driverThread.get().getDriver(browser);
-        //driver = driverThread.get().getDriver(System.getProperty("browser"));
     }
 
-   @AfterTest(alwaysRun = true)
+    @AfterTest(alwaysRun = true)
     public void closeBrowserSession(){
-        if(driverThread.get().getDriver(browser) != null){
-            driverThread.get().getDriver(browser).quit();
-        }
-
+        driverThread.get().closeBrowserSession();
     }
+
     @AfterMethod
     public void captureScreenshot(ITestResult result){
-        if(true){
-            //name partern menthodNAME-DD-MM-YY-HH-MM-SS.png
+        if(result.getStatus() == ITestResult.FAILURE){
+            // testMethodName-yyyy-m-dd-hr-mm-sec.png
+
+            // 1. Get method name
             String methodName = result.getName();
+
+            // 2. Get Taken time
             Calendar calendar = new GregorianCalendar();
-            int year = calendar.get(Calendar.YEAR);
-            int month = calendar.get(Calendar.MONTH) +1 ;
-            int day = calendar.get(Calendar.DATE);
-            int hour = calendar.get(Calendar.HOUR);
+            int y = calendar.get(Calendar.YEAR);
+            int m = calendar.get(Calendar.MONTH) + 1;
+            int d = calendar.get(Calendar.DATE);
+            int hr = calendar.get(Calendar.HOUR_OF_DAY);
             int min = calendar.get(Calendar.MINUTE);
-            int second = calendar.get(Calendar.SECOND);
-            String screenshotName = methodName + "-" + year + "-" + month + "-" + day
-                    + "-" + hour + "-" + min + "-" + second + ".jpg";
-            String fileLocation = System.getProperty("user.dir") + "/screenshots/" + screenshotName;
-            takeScreenshot(fileLocation);
-        }
-    }
+            int sec = calendar.get(Calendar.SECOND);
+            String filename = methodName + "-" + y + "-" + m + "-" + d + "-" + hr + "-" + min + "-" + sec + ".png";
 
-    private void takeScreenshot(String fileLocation){
-        try {
-            // Get the size of the screen
-            Rectangle screenRect = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
+            // 3. Take Screenshot
+            WebDriver driver = driverThread.get().getDriver(browser);
+            File screenshotBase64Data = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
 
-            // Create a robot to take the screenshot
-            Robot robot = new Robot();
-            BufferedImage screenshot = robot.createScreenCapture(screenRect);
+            try {
 
-            // Save the screenshot as a JPEG image
-            ImageIO.write(screenshot, "jpg", new File(fileLocation));
+                // 4. Save
+                String fileLocation = System.getProperty("user.dir") + "/screenshots/" + filename;
+                FileUtils.copyFile(screenshotBase64Data, new File(fileLocation));
 
+                // 5. Attach to report
+                Path content = Paths.get(fileLocation);
+                try (InputStream inputStream = Files.newInputStream(content)) {
+                    Allure.addAttachment(methodName, inputStream);
+                }
 
-            //add to report
-            Path content = Paths.get(fileLocation);
-            InputStream is = Files.newInputStream(content);
-            Allure.addAttachment("my attachment" , is);
-
-        } catch (Exception e) {
-            e.printStackTrace();
+            } catch (Exception e){
+                e.printStackTrace();
+            }
         }
     }
 }
