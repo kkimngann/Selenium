@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Trigger jenkins job
-      uses: jenkinsci/github-action@master
+      uses: jabbukka/jenkins-trigger@main
       with:
         url: ${{ secrets.JENKINS_URL }}
         job_name: "selenium-browserstack"
