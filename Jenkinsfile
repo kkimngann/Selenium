@@ -27,14 +27,6 @@ pipeline {
                   volumeMounts:
                   - name: shared-data
                     mountPath: /data
-                - name: minio-cli
-                  image: minio/mc
-                  command:
-                  - cat
-                  tty: true
-                  volumeMounts:
-                  - name: shared-data
-                    mountPath: /data
                 - name: jq
                   image: stedolan/jq:latest
                   command:
@@ -51,36 +43,15 @@ pipeline {
     }
 
     stages {
-        stage('restore cache') {
-            steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: 'minio_admin', usernameVariable: 'MINIO_USERNAME', passwordVariable: 'MINIO_PASSWORD')]) {
-                        container('minio-cli') {
-                            sh 'mc alias set minio http://minio.minio.svc.cluster.local:9000 ${MINIO_USERNAME} ${MINIO_PASSWORD}'
-                            sh 'mc mirror minio/selenium/.m2 /data &> /dev/null'
-                        }
-                    }
-                }
-            }
-        }
-
         stage('automated test'){
             steps {
                 script {
                     browserstack('binhpham_browserstack') {
                         container('maven') {
-                            sh '''
-                            mkdir -p .m2 && cp -rT /data ~/.m2 &> /dev/null
-                            mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DBROWSERSTACK_USERNAME=${BROWSERSTACK_USERNAME} -DBROWSERSTACK_ACCESSKEY=${BROWSERSTACK_ACCESS_KEY} > result.txt || true
-                            cp -rT ~/.m2 /data &> /dev/null
-                            '''
+                            sh 'mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DBROWSERSTACK_USERNAME=${BROWSERSTACK_USERNAME} -DBROWSERSTACK_ACCESSKEY=${BROWSERSTACK_ACCESS_KEY} > result.txt || true'
                         }
                     }
                     result = sh (script: 'grep "Tests run" result.txt | tail -1', returnStdout: true).trim()
-                    
-                    container('minio-cli') {
-                        sh "mc mirror /data minio/selenium/.m2 --overwrite &> /dev/null"
-                    }
                 }
             }
         }
