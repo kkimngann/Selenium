@@ -25,14 +25,6 @@ pipeline {
                   volumeMounts:
                   - name: shared-data
                     mountPath: /data
-                - name: minio-cli
-                  image: minio/mc
-                  command:
-                  - cat
-                  tty: true
-                  volumeMounts:
-                  - name: shared-data
-                    mountPath: /data
                 - name: jq
                   image: stedolan/jq:latest
                   command:
@@ -49,33 +41,14 @@ pipeline {
     }
 
     stages {
-        stage('restore cache') {
-            steps {
-                script {
-                    container('minio-cli') {
-                        sh "mc alias set minio http://minio.minio.svc.cluster.local:9000 vJlIj3mKR4Df9ZHt 9qZLIDh5A14IciJfEcmwGAk9iVQxHt4L"
-                        sh "mc mirror minio/selenium/.m2 /data &> /dev/null"
-                    }
-                }
-            }
-        }
-
         stage('automated test'){
             steps {
                 script {
                     container('maven') {
-                        sh '''
-                        mkdir -p .m2 && cp -rT /data ~/.m2 &> /dev/null
-                        mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DgridHub=http://moon.agileops.int/ > result.txt || true
-                        cp -rT ~/.m2 /data &> /dev/null
-                        '''
+                        sh 'mvn clean test -DsuiteFile=src/test/resources/test-suites/CucumberRunner.xml -DgridHub=http://moon.agileops.int/ > result.txt || true'
                     }
                     // Get summary test result
                     result = sh returnStdout: true, script: 'cat result.txt | sed -n \'/Failed tests/,/Tests run/p\''
-                    // Save cache for the next build
-                    container('minio-cli') {
-                        sh "mc mirror /data minio/selenium/.m2 --overwrite &> /dev/null"
-                    }
                 }
             }
         }
